@@ -1,30 +1,28 @@
 <!doctype html>
-<html lang="en" class="wc-lock wc-hide">
+<html lang="en">
   <head>
     <meta charset="utf-8" />
     <title>Ralph Dainiell Gonzaga — Portfolio</title>
     <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover" />
     <script>
       if ('scrollRestoration' in history) {
-        history.scrollRestoration = 'manual';
+        history.scrollRestoration = 'auto';
       }
-      if (window.location.hash) {
-        window.history.replaceState(null, '', window.location.pathname + window.location.search);
+      if (window.location.hash === '#home') {
+        history.replaceState(null, '', window.location.pathname + window.location.search);
       }
-      window.scrollTo(0, 0);
-    </script>
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;700&family=Pixelify+Sans:wght@400;500;600;700&family=Space+Grotesk:wght@400;500;700&family=VT323&family=Inter:wght@300;900&display=swap"
-      rel="stylesheet"
-    />
-  </head>
-  <body>
-    <div id="root"></div>
-    <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
+      window.addEventListener(
+        'keydown',
+        function (e) {
+          var isR = e.key === 'r' || e.key === 'R' || e.code === 'KeyR';
+          var isF5 = e.key === 'F5' || e.code === 'F5';
+          var isHard =
+            (e.shiftKey && (e.metaKey || e.ctrlKey) && isR) ||
+            ((e.shiftKey || e.ctrlKey) && isF5);
+          if (isHard) {
+            try {
+              sessionStorage.setItem('hard_reload', '1');
+              sessionStorage.removeItem('last_scroll_y');
             } catch (err) {}
           }
         },

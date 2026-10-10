@@ -1,4 +1,5 @@
 import React, { useEffect, useRef, useState } from 'react';
+import { shouldShowWelcome } from '../lib/utils';
 
 const WORDS = ["Welcome", "Mabuhay", "欢迎", "ようこそ", "欢迎光临"];
 const HOLD = [450, 230, 250, 250, 350];
@@ -9,9 +10,15 @@ export default function WelcomeScreen({ onComplete }) {
   const rootRef = useRef(null);
   const txtRef = useRef(null);
   const barRef = useRef(null);
-  const [isRendered, setIsRendered] = useState(true);
+  const [isRendered, setIsRendered] = useState(() => shouldShowWelcome());
 
   useEffect(() => {
+    if (!shouldShowWelcome()) {
+      window.WCB = false;
+      document.documentElement.classList.remove('wc-hide', 'wc-lock');
+      return;
+    }
+
     const root = rootRef.current;
     const txt = txtRef.current;
     const bar = barRef.current;
@@ -19,6 +26,7 @@ export default function WelcomeScreen({ onComplete }) {
     if (!root || !txt || !bar) return;
 
     window.WCB = true;
+    de.classList.add('wc-lock', 'wc-hide');
     window.scrollTo(0, 0);
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
@@ -31,7 +39,6 @@ export default function WelcomeScreen({ onComplete }) {
     const release = () => {
       window.WCB = false;
       de.classList.remove('wc-hide');
-      window.scrollTo(0, 0);
       const hm = document.getElementById('home');
       if (hm) hm.classList.add('in');
       if (onComplete) onComplete();
@@ -48,7 +55,6 @@ export default function WelcomeScreen({ onComplete }) {
       setTimeout(release, reduce ? 0 : 300);
       setTimeout(() => {
         de.classList.remove('wc-lock');
-        window.scrollTo(0, 0);
         setIsRendered(false);
       }, reduce ? 500 : 700);
     };
