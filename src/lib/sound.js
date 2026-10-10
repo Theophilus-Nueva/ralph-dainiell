@@ -254,7 +254,11 @@ export const SFX = (() => {
     }
   };
 
-  return {
+  const sfxCallable = function () {
+    tick();
+  };
+
+  return Object.assign(sfxCallable, {
     ctx: () => ctx,
     bus: () => bus,
     nb: () => noiseBuf,
@@ -267,7 +271,7 @@ export const SFX = (() => {
     },
     tick,
     wake,
-  };
+  });
 })();
 
 // Expose on window for components/handlers expecting window.SFX

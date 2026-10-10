@@ -236,7 +236,8 @@ export default function RailNav({ onNavigate, pulseRef }) {
       target = hover;
       if (r !== lastHov) {
         lastHov = r;
-        SFX();
+        if (typeof SFX?.tick === 'function') SFX.tick();
+        else if (typeof SFX === 'function') SFX();
       }
       kick();
       wake(true);
@@ -253,10 +254,36 @@ export default function RailNav({ onNavigate, pulseRef }) {
       wake(false);
     };
 
-    const onClick = () => {
-      if (hover !== null && onNavigate) {
-        SFX();
-        onNavigate(Math.round(hover));
+    function sectionFromY(clientY) {
+      if (!els.length) return 0;
+      const a = els[0].d.getBoundingClientRect();
+      const b = els[N - 1].d.getBoundingClientRect();
+      const span = b.top - a.top;
+      if (span <= 0) return 0;
+      const raw = Math.min(M, Math.max(0, ((clientY - a.top) / span) * M));
+      return Math.round(raw);
+    }
+
+    const onClick = (e) => {
+      let targetSec = -1;
+      const tick = e.target.closest('.t');
+      if (tick) {
+        const idx = els.findIndex((item) => item.d === tick);
+        if (idx !== -1) {
+          targetSec = Math.round(idx / 10);
+        }
+      }
+      if (targetSec === -1 && typeof e.clientY === 'number') {
+        targetSec = sectionFromY(e.clientY);
+      }
+      if (targetSec === -1 && hover !== null) {
+        targetSec = Math.round(hover);
+      }
+
+      if (targetSec >= 0 && targetSec <= M && onNavigate) {
+        if (typeof SFX?.tick === 'function') SFX.tick();
+        else if (typeof SFX === 'function') SFX();
+        onNavigate(targetSec);
       }
     };
 
