@@ -1,0 +1,275 @@
+.hero-container {
+  min-height: 100vh;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 100px 24px 60px;
+  background-color: #f3f4f6;
+  box-sizing: border-box;
+}
+
+.hero-content {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 52px;
+  max-width: 1100px;
+  width: 100%;
+}
+
+/* Photo Card Frame */
+.hero-image-wrapper {
+  flex-shrink: 0;
+}
+
+.hero-image-frame {
+  width: 275px;
+  height: 275px;
+  border-radius: 36px;
+  overflow: hidden;
+  position: relative;
+  background-color: #ffffff;
+  border: 4px solid #ffffff;
+  box-shadow: 6px 6px 4px  0px rgba(0, 0, 0, 0.3);
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-user-drag: none;
+  cursor: none;
+}
+
+.hero-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  object-position: center 22%;
+  display: block;
+  pointer-events: none;
+  user-select: none;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -webkit-touch-callout: none;
+  -webkit-user-drag: none;
+}
+
+.hero-image-base {
+  filter: grayscale(100%) contrast(1.05) brightness(1.02);
+}
+
+/* ASCII Effect Initial Load Overlay */
+.hero-ascii-overlay {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  z-index: 1;
+  pointer-events: none;
+  opacity: 1;
+  transition: opacity 0.35s ease-out;
+  border-radius: 32px;
+  overflow: hidden;
+}
+
+.hero-ascii-overlay.fade-out {
+  opacity: 0;
+}
+
+/* Magnifying Color Lens Overlay */
+.hero-image-lens {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  z-index: 2;
+  will-change: clip-path, opacity;
+  opacity: 0;
+}
+
+.hero-image-color {
+  filter: contrast(1.06) brightness(1.03);
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  pointer-events: none;
+  transform: scale(1.03);
+}
+
+/* Precision Magnifying Glass Ring - clipped strictly to the squircle frame */
+.hero-lens-ring {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: 120px;
+  height: 120px;
+  border-radius: 50%;
+  border: 2px solid #39FE16;
+  box-sizing: border-box;
+  pointer-events: none;
+  z-index: 3;
+  opacity: 0;
+  will-change: transform, opacity, background-color;
+}
+
+
+/* Details and Typography */
+.hero-details {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start;
+  justify-content: center;
+}
+
+.hero-name-block {
+  margin-bottom: 22px;
+}
+
+.hero-name {
+  margin: 0;
+  font-family: 'VT323', monospace;
+  font-weight: 400;
+  font-size: 76px;
+  line-height: 0.95;
+  letter-spacing: -6%;
+  color: #121316;
+  display: flex;
+  flex-direction: column;
+}
+
+.hero-name-line {
+  display: block;
+}
+
+/* Badges section with SplitFlap */
+.hero-badges {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  align-items: stretch;
+  width: fit-content;
+}
+
+.hero-badge {
+  background: #1c1c1e;
+  border-radius: 11px;
+  padding: 7px 18px;
+  box-shadow: 
+    0 6px 18px -3px rgba(0, 0, 0, 0.4),
+    0 2px 5px rgba(0, 0, 0, 0.2);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Custom styling for react-split-flap display */
+.custom-split-flap.split-flap-display {
+  gap: 0 !important;
+  justify-content: center !important;
+  margin: 0 auto !important;
+}
+
+
+.hero-badge .split-flap-part.top {
+  transform: scale(1.05);
+}
+
+.hero-badge .split-flap-digit {
+  background: transparent !important;
+  background-color: transparent !important;
+  border: none !important;
+  box-shadow: none !important;
+  border-radius: 0 !important;
+  font-family: 'VT323', monospace !important;
+  font-weight: 400 !important;
+  font-size: 42px !important;
+  height: 44px !important;
+  line-height: 44px !important;
+  width: 1.05ch !important;
+  min-width: 1.05ch !important;
+}
+
+.hero-badge .split-flap-digit:before {
+  display: none !important;
+}
+
+.hero-badge .split-flap-part {
+  background-color: #1c1c1e !important;
+  border: none !important;
+  box-shadow: 0 0 4px 2px #434343b6 !important;
+  border-radius: 0 !important;
+}
+
+.hero-badge .split-flap-char {
+  font-family: 'VT323', monospace !important;
+  font-weight: 400 !important;
+  letter-spacing: 0.03em;
+}
+
+.hero-badge .split-flap-hinge {
+  background: #121214 !important;
+  height: 2px !important;
+  box-shadow: none !important;
+}
+
+/* Responsive adjustments */
+@media (max-width: 860px) {
+  .hero-content {
+    flex-direction: column;
+    gap: 36px;
+    text-align: center;
+  }
+
+  .hero-details {
+    align-items: center;
+  }
+
+  .hero-name {
+    font-size: 58px;
+  }
+
+  .hero-badge .split-flap-digit {
+    font-size: 32px !important;
+    height: 34px !important;
+    line-height: 34px !important;
+  }
+
+  .hero-image-frame {
+    width: 230px;
+    height: 230px;
+    border-radius: 30px;
+  }
+}
+
+@media (max-width: 540px) {
+  .hero-name {
+    font-size: 44px;
+  }
+
+  .hero-image-frame {
+    width: 190px;
+    height: 190px;
+    border-radius: 26px;
+  }
+
+  .hero-badge {
+    padding: 6px 14px;
+    border-radius: 9px;
+  }
+
+  .hero-badge .split-flap-digit {
+    font-size: 22px !important;
+    height: 24px !important;
+    line-height: 24px !important;
+    width: 1.05ch !important;
+    min-width: 1.05ch !important;
+  }
+}

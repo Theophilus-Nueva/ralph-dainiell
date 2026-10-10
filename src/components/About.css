@@ -1,0 +1,158 @@
+.about-section {
+  min-height: 100vh;
+  width: 100%;
+  background-color: #000000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 110px 24px 70px;
+  box-sizing: border-box;
+  position: relative;
+}
+
+.about-container {
+  max-width: 960px;
+  width: 100%;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+}
+
+/* macOS Terminal Window Card */
+.terminal-window {
+  width: 100%;
+  border-radius: 28px;
+  overflow: hidden;
+  background-color: #191a1d;
+  box-shadow: 
+    0 24px 48px -8px rgba(0, 0, 0, 0.7),
+    0 10px 20px -4px rgba(0, 0, 0, 0.5),
+    0 0 0 1px rgba(255, 255, 255, 0.08);
+  display: flex;
+  flex-direction: column;
+}
+
+/* macOS Title Bar with Traffic Light Control Buttons */
+.terminal-header {
+  background-color: #55575c;
+  height: 56px;
+  display: flex;
+  align-items: center;
+  padding: 0 24px;
+  border-top-left-radius: 28px;
+  border-top-right-radius: 28px;
+  border-bottom: 1px solid rgba(0, 0, 0, 0.25);
+  box-sizing: border-box;
+}
+
+.terminal-controls {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+}
+
+.control-dot {
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  display: inline-block;
+}
+
+.dot-red {
+  background-color: #ff5f56;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.dot-yellow {
+  background-color: #ffbd2e;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+.dot-green {
+  background-color: #27c93f;
+  border: 1px solid rgba(0, 0, 0, 0.15);
+}
+
+/* Terminal Content Body */
+.terminal-body {
+  padding: 56px 52px 64px;
+  background-color: #191a1d;
+  border-bottom-left-radius: 28px;
+  border-bottom-right-radius: 28px;
+  box-sizing: border-box;
+}
+
+.terminal-text {
+  font-family: 'VT323', monospace;
+  font-size: 35px;
+  line-height: 1.35;
+  letter-spacing: 0.035em;
+  color: #ffffff;
+  margin: 0;
+  word-spacing: 0.04em;
+  user-select: text;
+}
+
+/* Blinking Block Cursor */
+.terminal-cursor {
+  display: inline-block;
+  margin-left: 3px;
+  color: #ffffff;
+  font-family: 'VT323', monospace;
+  animation: terminal-blink 1s step-start infinite;
+  user-select: none;
+}
+
+@keyframes terminal-blink {
+  0%, 49% {
+    opacity: 1;
+  }
+  50%, 100% {
+    opacity: 0;
+  }
+}
+
+/* Responsive adjustments */
+@media (max-width: 768px) {
+  .about-section {
+    padding: 90px 16px 50px;
+  }
+
+  .terminal-window {
+    border-radius: 20px;
+  }
+
+  .terminal-header {
+    height: 44px;
+    padding: 0 16px;
+    border-top-left-radius: 20px;
+    border-top-right-radius: 20px;
+  }
+
+  .control-dot {
+    width: 12px;
+    height: 12px;
+  }
+
+  .terminal-body {
+    padding: 36px 28px 44px;
+    border-bottom-left-radius: 20px;
+    border-bottom-right-radius: 20px;
+  }
+
+  .terminal-text {
+    font-size: 26px;
+    line-height: 1.3;
+  }
+}
+
+@media (max-width: 480px) {
+  .terminal-body {
+    padding: 28px 18px 36px;
+  }
+
+  .terminal-text {
+    font-size: 21px;
+    line-height: 1.35;
+  }
+}
