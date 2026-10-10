@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from 'react';
 import { SECTIONS } from '../data/portfolioData';
+import { SFX } from '../lib/sound';
 
 const M = SECTIONS.length - 1;
 const N = M * 10 + 1; // 41 ticks
@@ -66,6 +67,7 @@ export default function RailNav({ onNavigate, pulseRef }) {
     let avel = 0;
     let raf = 0;
     let last = -1;
+    let lastHov = -1;
     let pulse = null;
     const t0 = performance.now();
     const INTRO = N * 18 + 700;
@@ -135,8 +137,18 @@ export default function RailNav({ onNavigate, pulseRef }) {
     let sleepT = 0;
     let scr = null;
 
+    function stopScr() {
+      if (!scr) return;
+      cancelAnimationFrame(scr.raf);
+      clearTimeout(scr.end);
+      scr.items.forEach((it) => {
+        it.el.textContent = it.txt;
+      });
+      scr = null;
+    }
+
     function scramble() {
-      const items = [...rail.querySelectorAll('.t.here b, .t.on b')].map((el) => ({
+      const items = [...rail.querySelectorAll('.t.major b')].map((el) => ({
         el,
         txt: el.textContent,
       }));
@@ -180,87 +192,103 @@ export default function RailNav({ onNavigate, pulseRef }) {
         }
         if (t < T) {
           scr.raf = requestAnimationFrame(step);
-        } else {
-          rail.classList.remove('awake');
-          scr.end = setTimeout(() => {
-            items.forEach((it) => {
-              it.el.textContent = it.txt;
-            });
-            scr = null;
-          }, 320);
         }
       };
 
       scr.raf = requestAnimationFrame(step);
+      scr.end = setTimeout(() => {
+        rail.classList.remove('awake');
+        scr.end = setTimeout(stopScr, 250);
+      }, T);
     }
 
-    function wake() {
+    function wake(hold) {
+      stopScr();
+      rail.classList.add('awake');
       clearTimeout(sleepT);
-      if (!rail.classList.contains('awake')) {
-        rail.classList.add('awake');
-      }
-      sleepT = setTimeout(scramble, 1500);
+      if (!hold) sleepT = setTimeout(scramble, 600);
     }
 
     function sync() {
       const k = Math.min(M, Math.floor(scrollPos() + 1 - 0.55));
       if (k !== last) {
         last = k;
-        wake();
+        wake(false);
         rail.setAttribute('aria-valuenow', String(k));
         rail.setAttribute('aria-valuetext', SECTIONS[k].name);
       }
-      target = railPos();
-      kick();
+      if (hover === null) {
+        target = railPos();
+        kick();
+      }
     }
 
     window.addEventListener('scroll', sync, { passive: true });
     window.addEventListener('resize', sync);
 
-    const onPointerEnter = () => {
-      wake();
-      hover = cur;
+    function hoverFrom(ev) {
+      const a = els[0].d.getBoundingClientRect();
+      const b = els[N - 1].d.getBoundingClientRect();
+      const span = b.top - a.top;
+      const raw = span > 0 ? Math.min(M, Math.max(0, ((ev.clientY - a.top) / span) * M)) : 0;
+      const r = Math.round(raw);
+      hover = Math.abs(raw - r) < 0.25 ? raw + (r - raw) * 0.6 : raw;
+      target = hover;
+      if (r !== lastHov) {
+        lastHov = r;
+        SFX();
+      }
       kick();
-    };
+      wake(true);
+    }
 
-    const onPointerMove = (e) => {
-      wake();
-      const r = rail.getBoundingClientRect();
-      const p = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
-      hover = p * M;
-      kick();
-    };
+    const onPointerMove = (e) => hoverFrom(e);
+    const onPointerDown = (e) => hoverFrom(e);
 
     const onPointerLeave = () => {
       hover = null;
+      lastHov = -1;
+      target = railPos();
       kick();
+      wake(false);
     };
 
-    const onClick = (e) => {
-      const r = rail.getBoundingClientRect();
-      const p = Math.min(1, Math.max(0, (e.clientY - r.top) / r.height));
-      const k = Math.min(M, Math.floor(p * (M + 1)));
-      if (onNavigate) onNavigate(k);
+    const onClick = () => {
+      if (hover !== null && onNavigate) {
+        SFX();
+        onNavigate(Math.round(hover));
+      }
     };
 
-    rail.addEventListener('pointerenter', onPointerEnter);
+    const onKeyDown = (e) => {
+      const k = Math.min(M, Math.floor(scrollPos() + 1 - 0.55));
+      const n = { ArrowUp: k - 1, ArrowLeft: k - 1, ArrowDown: k + 1, ArrowRight: k + 1, Home: 0, End: M }[e.key];
+      if (n === undefined) return;
+      e.preventDefault();
+      wake(false);
+      if (onNavigate) onNavigate(Math.min(M, Math.max(0, n)));
+    };
+
     rail.addEventListener('pointermove', onPointerMove);
+    rail.addEventListener('pointerdown', onPointerDown);
     rail.addEventListener('pointerleave', onPointerLeave);
     rail.addEventListener('click', onClick);
+    rail.addEventListener('keydown', onKeyDown);
 
     sync();
     kick();
-    wake();
+    wake(false);
 
     return () => {
       window.removeEventListener('scroll', sync);
       window.removeEventListener('resize', sync);
-      rail.removeEventListener('pointerenter', onPointerEnter);
       rail.removeEventListener('pointermove', onPointerMove);
+      rail.removeEventListener('pointerdown', onPointerDown);
       rail.removeEventListener('pointerleave', onPointerLeave);
       rail.removeEventListener('click', onClick);
+      rail.removeEventListener('keydown', onKeyDown);
       clearTimeout(sleepT);
-      if (scr) cancelAnimationFrame(scr.raf);
+      stopScr();
       cancelAnimationFrame(raf);
     };
   }, [onNavigate, pulseRef]);
