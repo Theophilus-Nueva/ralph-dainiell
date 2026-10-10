@@ -93,38 +93,8 @@ export default function CertificateSection() {
     setIsPing(true);
     const willOpen = !isOpen;
     setIsOpen(willOpen);
-    setIsDone(false);
-
-    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-    const DUR = 900;
-    const btn = btnRef.current;
-    const sec = containerRef.current;
-
-    if (btn && sec && !reduce) {
-      const y0 = btn.getBoundingClientRect().top;
-      const st = performance.now();
-      const cap = () => Math.max(0, sec.offsetTop + sec.offsetHeight - window.innerHeight);
-
-      const smoothKeepButton = (now) => {
-        const d = btn.getBoundingClientRect().top - y0;
-        let y = Math.abs(d) > 0.4 ? window.scrollY + d : window.scrollY;
-        y = Math.min(y, cap());
-        if (Math.abs(y - window.scrollY) > 0.4) {
-          window.scrollTo({ top: y, behavior: 'instant' });
-        }
-        if (now - st < DUR) {
-          requestAnimationFrame(smoothKeepButton);
-        } else {
-          if (window.scrollY > cap() + 1) window.scrollTo({ top: cap(), behavior: 'instant' });
-          if (willOpen) setIsDone(true);
-          window.dispatchEvent(new Event('resize'));
-        }
-      };
-
-      requestAnimationFrame(smoothKeepButton);
-    } else {
-      if (willOpen) setIsDone(true);
-    }
+    setIsDone(willOpen);
+    window.dispatchEvent(new Event('resize'));
   };
 
   const renderCard = ([l, t, issuer, u], n) => {

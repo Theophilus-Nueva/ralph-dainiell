@@ -204,7 +204,7 @@ html.on-home #hcon:active{transform:translateY(0) scale(.96)}
 #rail.awake .t.major.here b{opacity:.75;transform:none}
 #rail.awake .t.major.on b,#rail:focus-visible .t.here b{opacity:1;transform:translateX(-4px);color:#fff}
 @media (max-width:640px){.stk{display:flex;flex-direction:column}.sth{display:contents}.shd{padding-bottom:clamp(1.4rem,3.4vh,2.3rem)}.ghw{order:99;flex:none;width:100%;min-width:0;margin-top:clamp(1.6rem,4vh,2.4rem)}.grp{grid-template-columns:1fr;gap:12px;padding:20px 0 26px}.grp h3{min-height:0}#rail{right:0}.t b{display:none}.home{flex-direction:column;align-items:flex-start}}
-@media (prefers-reduced-motion:reduce){html{scroll-behavior:auto}.sh i{animation:none}.ttl span,.line,.idx,.rv,.ph,#roll,.cd,.cbtn,.cbtn span,.cmx,.cbtn svg{transition:none}.cbtn.ping::after{animation:none}.cmx .cw.rv,.cmx.open .cw.rv{transition:none}#cur.hov::before{animation:none}.tbrow{transition:none}}
+@media (prefers-reduced-motion:reduce){.sh i{animation:none}.ttl span,.line,.idx,.rv,.ph,#roll,.cd,.cbtn,.cbtn span,.cmx,.cbtn svg{transition:none}.cbtn.ping::after{animation:none}.cmx .cw.rv,.cmx.open .cw.rv{transition:none}#cur.hov::before{animation:none}.tbrow{transition:none}}
 
 /* cursor: two looks, same idea as the certificate VERIFY label -- default = quiet, hover (anything clickable, every certificate card) = lit */
 @media (hover:hover) and (pointer:fine){html,html *{cursor:none!important}}

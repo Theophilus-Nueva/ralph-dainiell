@@ -1,4 +1,4 @@
-import React, { useRef, useCallback } from 'react';
+import React, { useRef, useCallback, useEffect } from 'react';
 import SvgDefs from './components/SvgDefs';
 import WelcomeScreen from './components/WelcomeScreen';
 import CustomCursor from './components/CustomCursor';
@@ -13,6 +13,22 @@ import { usePageNavigation } from './lib/usePageNavigation';
 
 export default function App() {
   const pulseRef = useRef(null);
+
+  useEffect(() => {
+    if ('scrollRestoration' in window.history) {
+      window.history.scrollRestoration = 'manual';
+    }
+    window.scrollTo(0, 0);
+
+    const handleBeforeUnload = () => {
+      window.scrollTo(0, 0);
+    };
+    window.addEventListener('beforeunload', handleBeforeUnload);
+
+    return () => {
+      window.removeEventListener('beforeunload', handleBeforeUnload);
+    };
+  }, []);
 
   const { navigateTo, connectFlow } = usePageNavigation({
     pulseRef,

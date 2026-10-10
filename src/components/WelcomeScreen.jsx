@@ -19,6 +19,7 @@ export default function WelcomeScreen({ onComplete }) {
     if (!root || !txt || !bar) return;
 
     window.WCB = true;
+    window.scrollTo(0, 0);
     const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
     const sleep = (ms) => new Promise((r) => setTimeout(r, ms));
     const cjk = (w) => /[\u3000-\u9fff]/.test(w);
@@ -30,6 +31,7 @@ export default function WelcomeScreen({ onComplete }) {
     const release = () => {
       window.WCB = false;
       de.classList.remove('wc-hide');
+      window.scrollTo(0, 0);
       const hm = document.getElementById('home');
       if (hm) hm.classList.add('in');
       if (onComplete) onComplete();
@@ -46,6 +48,7 @@ export default function WelcomeScreen({ onComplete }) {
       setTimeout(release, reduce ? 0 : 300);
       setTimeout(() => {
         de.classList.remove('wc-lock');
+        window.scrollTo(0, 0);
         setIsRendered(false);
       }, reduce ? 500 : 700);
     };
