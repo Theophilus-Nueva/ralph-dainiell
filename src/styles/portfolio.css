@@ -1,11 +1,11 @@
 
 :root{--ease:cubic-bezier(.77,0,.18,1);--mono:"JetBrains Mono","SF Mono",ui-monospace,Menlo,Consolas,monospace;box-sizing:border-box;padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-snap-type:y mandatory;overscroll-behavior-y:none}
+html{scroll-behavior:smooth;overscroll-behavior-y:none}
 html,body{scrollbar-width:none;-ms-overflow-style:none}
 html::-webkit-scrollbar,body::-webkit-scrollbar{display:none;width:0;height:0}
 body{margin:0;font-family:var(--mono);background:#0e0e0f;overflow-x:hidden}
-section{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;scroll-snap-align:start;scroll-snap-stop:normal;transition:none}
+section{position:relative;min-height:100vh;display:flex;align-items:center;justify-content:center;padding:2rem;transition:none}
 .lt{background:#e8e8e8;color:#000}.dk{background:#0e0e0f;color:#f2f2f2}
 .rv{opacity:0;transform:translateY(14px);transition:opacity .9s var(--ease),transform .9s var(--ease);transition-delay:calc(var(--d,0)*100ms + .15s)}
 section.in .rv{opacity:1;transform:none}

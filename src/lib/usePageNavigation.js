@@ -1,48 +1,245 @@
-import { useEffect, useState, useCallback } from 'react';
+import { useEffect, useRef, useState, useCallback } from 'react';
 import { SECTIONS } from '../data/portfolioData';
 
 const M = SECTIONS.length - 1;
+const SW = 0.55;
+const GAP = 120;
+const TH = 140;
+const ACC_MS = 350;
+const CX_GO = 650;
+const CX_HOLD = 650;
+const CX_GLIDE = 800;
 
 export function usePageNavigation({ onSectionChange, pulseRef }) {
   const [activeIdx, setActiveIdx] = useState(0);
 
-  const sec = useCallback((k) => {
-    if (k < 0 || k > M) return null;
-    return document.getElementById(SECTIONS[k].id);
-  }, []);
+  const cxRunRef = useRef(false);
+  const navBusyRef = useRef(false);
+  const lockWRef = useRef(false);
+  const lastWRef = useRef(0);
+  const accRef = useRef(0);
+  const accTRef = useRef(0);
+  const gEdgeRef = useRef([true, true]);
+  const sTRef = useRef(null);
+  const sRafRef = useRef(0);
+  const twRef = useRef(0);
+  const tyRef = useRef(0);
+  const edge0Ref = useRef([false, false]);
+  const stTRef = useRef(0);
 
-  const curSec = useCallback(() => {
-    const y = window.scrollY;
-    let k = 0;
-    for (let j = 0; j <= M; j++) {
-      const el = sec(j);
-      if (el && y >= el.offsetTop - window.innerHeight * 0.4) {
-        k = j;
-      }
-    }
-    return k;
-  }, [sec]);
-
-  // Smooth navigation to a specific section index (0 to M)
-  const navigateTo = useCallback(
-    (k) => {
-      if (k < 0 || k > M) return;
-      const el = sec(k);
-      if (!el) return;
-      if (pulseRef?.current) pulseRef.current(k * 10);
-      el.scrollIntoView({ behavior: 'smooth' });
-    },
-    [sec, pulseRef]
+  const sec = useCallback((k) => document.getElementById(SECTIONS[k].id), []);
+  const maxY = useCallback(
+    () => document.documentElement.scrollHeight - window.innerHeight,
+    []
   );
 
-  // Connect button flow: scrolls smoothly to the last section (CONNECT)
-  const connectFlow = useCallback(() => {
-    const el = sec(M);
-    if (!el) return;
-    if (pulseRef?.current) pulseRef.current(M * 10);
-    el.scrollIntoView({ behavior: 'smooth' });
-  }, [sec, pulseRef]);
+  const SLACK = 48;
+  const tall = useCallback(
+    (k) => (sec(k)?.offsetHeight || 0) > window.innerHeight + SLACK,
+    [sec]
+  );
 
+  const lo = useCallback(
+    (k) => Math.min(sec(k)?.offsetTop || 0, maxY()),
+    [sec, maxY]
+  );
+
+  const hi = useCallback(
+    (k) =>
+      tall(k)
+        ? Math.min(
+            Math.max(lo(k), (sec(k)?.offsetTop || 0) + (sec(k)?.offsetHeight || 0) - window.innerHeight),
+            maxY()
+          )
+        : lo(k),
+    [tall, lo, sec, maxY]
+  );
+
+  const curSec = useCallback(() => {
+    let k = 0;
+    const y = window.scrollY;
+    for (let j = 0; j <= M; j++) {
+      if (y >= lo(j) - 2) k = j;
+    }
+    return k;
+  }, [lo]);
+
+  const wcOn = useCallback(
+    () => cxRunRef.current || document.documentElement.classList.contains('wc-lock'),
+    []
+  );
+
+  // Smooth intra-page scrolling
+  const sStep = useCallback(function step() {
+    sRafRef.current = 0;
+    if (sTRef.current === null) return;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+    const d = sTRef.current - window.scrollY;
+    if (reduce || Math.abs(d) < 0.6) {
+      window.scrollTo({ top: sTRef.current, behavior: 'instant' });
+      sTRef.current = null;
+      return;
+    }
+    let st = d * 0.13;
+    if (Math.abs(st) < 1) st = Math.sign(d) * Math.min(1, Math.abs(d));
+    window.scrollTo({ top: window.scrollY + st, behavior: 'instant' });
+    sRafRef.current = requestAnimationFrame(step);
+  }, []);
+
+  const smoothTo = useCallback(
+    (y) => {
+      sTRef.current = Math.max(0, Math.min(maxY(), y));
+      if (!sRafRef.current) {
+        sRafRef.current = requestAnimationFrame(sStep);
+      }
+    },
+    [maxY, sStep]
+  );
+
+  const tweenTo = useCallback(
+    (y, slow, ms) => {
+      cancelAnimationFrame(sRafRef.current);
+      sRafRef.current = 0;
+      sTRef.current = null;
+      cancelAnimationFrame(twRef.current);
+
+      const targetY = Math.max(0, Math.min(maxY(), y));
+      const y0 = window.scrollY;
+      const d = targetY - y0;
+      const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+      if (reduce || Math.abs(d) < 2) {
+        window.scrollTo({ top: targetY, behavior: 'instant' });
+        navBusyRef.current = false;
+        return;
+      }
+
+      const T = ms || (slow ? 1400 : Math.min(1100, 520 + (Math.abs(d) / window.innerHeight) * 200));
+      const st = performance.now();
+      navBusyRef.current = true;
+
+      const f = (now) => {
+        const p = Math.min(1, (now - st) / T);
+        const e = p < 0.5 ? 4 * p * p * p : 1 - Math.pow(-2 * p + 2, 3) / 2;
+        window.scrollTo({ top: y0 + (targetY - y0) * e, behavior: 'instant' });
+        if (p < 1) {
+          twRef.current = requestAnimationFrame(f);
+        } else {
+          navBusyRef.current = false;
+        }
+      };
+
+      twRef.current = requestAnimationFrame(f);
+    },
+    [maxY]
+  );
+
+  const rel = useCallback(function release() {
+    if (navBusyRef.current || performance.now() - lastWRef.current < GAP) {
+      setTimeout(release, 60);
+    } else {
+      lockWRef.current = false;
+    }
+  }, []);
+
+  const navTo = useCallback(
+    (n, dir) => {
+      lockWRef.current = true;
+      if (pulseRef?.current) pulseRef.current(n * 10);
+      tweenTo(dir < 0 ? hi(n) : lo(n), (dir > 0 && n === 4) || (dir < 0 && n === 3));
+      setTimeout(rel, 300);
+    },
+    [hi, lo, pulseRef, tweenTo, rel]
+  );
+
+  const stepPage = useCallback(
+    (dir, dy, cross = true, big = true) => {
+      const k = curSec();
+      const y = sTRef.current !== null ? sTRef.current : window.scrollY;
+
+      if (k === M) {
+        const a = lo(M);
+        const b = hi(M);
+        if (dir > 0 && y < b - 1) {
+          if (big) {
+            lockWRef.current = true;
+            tweenTo(b, true);
+            setTimeout(rel, 300);
+          }
+          return;
+        }
+        if (dir < 0 && y > a + 1) {
+          if (big) {
+            lockWRef.current = true;
+            tweenTo(a, true);
+            setTimeout(rel, 300);
+          }
+          return;
+        }
+      }
+
+      const amt = dir * (Math.abs(dy) < 1 ? 40 : Math.abs(dy)) * 1.3;
+      if (dir > 0 && y < hi(k) - 1) {
+        smoothTo(Math.min(y + amt, hi(k)));
+        return;
+      }
+      if (dir < 0 && y > lo(k) + 1) {
+        if (tall(k)) {
+          smoothTo(Math.max(y + amt, lo(k)));
+        } else if (big) {
+          lockWRef.current = true;
+          if (pulseRef?.current) pulseRef.current(k * 10);
+          tweenTo(lo(k));
+          setTimeout(rel, 300);
+        }
+        return;
+      }
+
+      const n = k + dir;
+      if (cross && n >= 0 && n <= M) navTo(n, dir);
+    },
+    [curSec, lo, hi, tall, tweenTo, smoothTo, navTo, rel, pulseRef]
+  );
+
+  const navigateTo = useCallback(
+    (k) => {
+      if (wcOn()) return;
+      const c = curSec();
+      if (pulseRef?.current) pulseRef.current(k * 10);
+      tweenTo(lo(k), (c === 3 && k === 4) || (c === 4 && k === 3));
+    },
+    [wcOn, curSec, pulseRef, tweenTo, lo]
+  );
+
+  const cxIdle = useCallback(
+    () =>
+      new Promise((r) => {
+        const t = () => (navBusyRef.current ? requestAnimationFrame(t) : r());
+        requestAnimationFrame(t);
+      }),
+    []
+  );
+
+  const cxWait = (ms) => new Promise((r) => setTimeout(r, ms));
+
+  const connectFlow = useCallback(async () => {
+    if (cxRunRef.current || wcOn()) return;
+    cxRunRef.current = true;
+    const reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+
+    try {
+      if (pulseRef?.current) pulseRef.current(M * 10);
+      tweenTo(lo(M), false, CX_GO);
+      await cxIdle();
+      await cxWait(reduce ? 700 : CX_HOLD);
+      tweenTo(hi(M), true, CX_GLIDE);
+      await cxIdle();
+    } finally {
+      cxRunRef.current = false;
+    }
+  }, [wcOn, pulseRef, tweenTo, lo, hi, cxIdle]);
+
+  // Main input events: wheel, touch, keys, settle, fit
   useEffect(() => {
     // 1. Viewport scaler --u
     const fit = () => {
@@ -56,7 +253,63 @@ export function usePageNavigation({ onSectionChange, pulseRef }) {
     fit();
     window.addEventListener('resize', fit);
 
-    // 2. Keyboard navigation
+    // 2. Wheel gesture listener
+    const onWheel = (e) => {
+      if (e.ctrlKey) return;
+      e.preventDefault();
+      if (wcOn()) return;
+
+      const now = performance.now();
+      if (now - lastWRef.current > GAP) {
+        const k = curSec();
+        const cy = sTRef.current !== null ? sTRef.current : window.scrollY;
+        gEdgeRef.current = [cy >= hi(k) - 1, cy <= lo(k) + 1];
+      }
+      lastWRef.current = now;
+      if (navBusyRef.current || lockWRef.current) return;
+
+      const d = e.deltaMode === 1 ? e.deltaY * 32 : e.deltaY;
+      if (Math.abs(d) < 1) return;
+
+      const dir = d > 0 ? 1 : -1;
+      if (now - accTRef.current > ACC_MS || Math.sign(accRef.current) !== dir) {
+        accRef.current = 0;
+      }
+      accRef.current += d;
+      accTRef.current = now;
+      const big = Math.abs(accRef.current) >= TH;
+
+      stepPage(
+        dir,
+        Math.max(-140, Math.min(140, d)),
+        big && (dir > 0 ? gEdgeRef.current[0] : gEdgeRef.current[1]),
+        big
+      );
+    };
+
+    // 3. Touch listeners
+    const onTouchStart = (e) => {
+      tyRef.current = e.touches[0].clientY;
+      const k = curSec();
+      edge0Ref.current = [window.scrollY >= hi(k) - 2, window.scrollY <= lo(k) + 2];
+    };
+
+    const onTouchMove = (e) => {
+      if ((wcOn() || !tall(curSec()) || curSec() === M) && e.cancelable) {
+        e.preventDefault();
+      }
+    };
+
+    const onTouchEnd = (e) => {
+      const dy = tyRef.current - e.changedTouches[0].clientY;
+      if (Math.abs(dy) < 45 || navBusyRef.current || lockWRef.current || wcOn()) return;
+      const k = curSec();
+      const d = dy > 0 ? 1 : -1;
+      if (tall(k) && k !== M && !(d > 0 ? edge0Ref.current[0] : edge0Ref.current[1])) return;
+      stepPage(d, 0);
+    };
+
+    // 4. Keyboard navigation
     const onKeyDown = (e) => {
       if (
         e.defaultPrevented ||
@@ -67,24 +320,59 @@ export function usePageNavigation({ onSectionChange, pulseRef }) {
       )
         return;
 
-      const k = curSec();
-      if (e.key === 'ArrowDown' || e.key === 'PageDown' || e.key === ' ') {
-        e.preventDefault();
-        navigateTo(Math.min(M, k + 1));
-      } else if (e.key === 'ArrowUp' || e.key === 'PageUp') {
-        e.preventDefault();
-        navigateTo(Math.max(0, k - 1));
-      } else if (e.key === 'Home') {
-        e.preventDefault();
-        navigateTo(0);
-      } else if (e.key === 'End') {
-        e.preventDefault();
-        navigateTo(M);
-      }
-    };
-    window.addEventListener('keydown', onKeyDown);
+      const K = {
+        ArrowDown: [1, 100],
+        PageDown: [1, window.innerHeight * 0.85],
+        ArrowUp: [-1, -100],
+        PageUp: [-1, -window.innerHeight * 0.85],
+        Home: [0],
+        End: [2],
+      };
+      const a = e.key === ' ' ? (e.shiftKey ? K.PageUp : K.PageDown) : K[e.key];
+      if (!a) return;
+      e.preventDefault();
+      if (navBusyRef.current || lockWRef.current || wcOn()) return;
 
-    // 3. Section in-view awareness via IntersectionObserver
+      if (a[0] === 0) navigateTo(0);
+      else if (a[0] === 2) navigateTo(M);
+      else stepPage(a[0], a[1], !e.repeat);
+    };
+
+    // 5. Settle step
+    function settle() {
+      if (navBusyRef.current) return;
+      const y = window.scrollY;
+      let best = y;
+      let bd = 1e9;
+      for (let k = 0; k <= M; k++) {
+        const a = lo(k);
+        const b = hi(k);
+        if (y >= a - 1 && y <= b + 1) return;
+        [a, b].forEach((q) => {
+          const d = Math.abs(q - y);
+          if (d < bd) {
+            bd = d;
+            best = q;
+          }
+        });
+      }
+      tweenTo(best);
+    }
+
+    const later = () => {
+      clearTimeout(stTRef.current);
+      stTRef.current = setTimeout(settle, 180);
+    };
+
+    window.addEventListener('wheel', onWheel, { passive: false });
+    window.addEventListener('touchstart', onTouchStart, { passive: true });
+    window.addEventListener('touchmove', onTouchMove, { passive: false });
+    window.addEventListener('touchend', onTouchEnd, { passive: true });
+    window.addEventListener('keydown', onKeyDown);
+    window.addEventListener('scroll', later, { passive: true });
+    window.addEventListener('resize', later);
+
+    // Section in-view awareness
     const io = new IntersectionObserver(
       (entries) => {
         entries.forEach((e) => {
@@ -99,7 +387,7 @@ export function usePageNavigation({ onSectionChange, pulseRef }) {
           }
         });
       },
-      { threshold: 0.35 }
+      { threshold: SW }
     );
 
     SECTIONS.forEach((s) => {
@@ -109,10 +397,17 @@ export function usePageNavigation({ onSectionChange, pulseRef }) {
 
     return () => {
       window.removeEventListener('resize', fit);
+      window.removeEventListener('wheel', onWheel);
+      window.removeEventListener('touchstart', onTouchStart);
+      window.removeEventListener('touchmove', onTouchMove);
+      window.removeEventListener('touchend', onTouchEnd);
       window.removeEventListener('keydown', onKeyDown);
+      window.removeEventListener('scroll', later);
+      window.removeEventListener('resize', later);
+      clearTimeout(stTRef.current);
       io.disconnect();
     };
-  }, [curSec, navigateTo, onSectionChange]);
+  }, [wcOn, curSec, hi, lo, tall, stepPage, navigateTo, tweenTo, onSectionChange]);
 
   return {
     activeIdx,
