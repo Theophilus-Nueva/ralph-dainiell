@@ -1,5 +1,5 @@
 // Portfolio data definitions
-import heroPortrait from '../assets/hero-portrait.svg';
+import pfpPortrait from '../assets/PFP.svg';
 import letsdefendLogo from '../assets/logos/letsdefend.png';
 import tryhackmeLogo from '../assets/logos/tryhackme.svg';
 import packtLogo from '../assets/logos/packt.png';
@@ -7,7 +7,7 @@ import ciscoLogo from '../assets/logos/cisco.svg';
 import googleLogo from '../assets/logos/google.svg';
 import metaLogo from '../assets/logos/meta.svg';
 
-export const PHOTO = heroPortrait;
+export const PHOTO = pfpPortrait;
 
 export const LOGO = {
   letsdefend: letsdefendLogo,

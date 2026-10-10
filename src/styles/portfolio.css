@@ -11,7 +11,7 @@ section{position:relative;min-height:100vh;display:flex;align-items:center;justi
 section.in .rv{opacity:1;transform:none}
 /* home */
 .home{display:flex;align-items:flex-end;gap:.9vw}
-.ph{width:clamp(170px,27.6vw,520px);aspect-ratio:382/354;flex:none;clip-path:inset(100% 0 0 0);transition:clip-path 1.1s var(--ease)}
+.ph{width:clamp(170px,27.6vw,520px);aspect-ratio:371/344;flex:none;clip-path:inset(100% 0 0 0);transition:clip-path 1.1s var(--ease)}
 .ph img,.ph svg{display:block;width:100%;height:100%;object-fit:contain}
 .ph>img{will-change:transform;transform:translateZ(0)}
 section.in .ph{clip-path:inset(0)}
