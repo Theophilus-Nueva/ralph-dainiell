@@ -91,11 +91,14 @@ export default function ConnectSection({ connectData }) {
           r < 0.0005 ? 'none' : `translateX(${(d * 50 * r).toFixed(1)}px) rotateX(${(d * 50 * r).toFixed(1)}deg)`;
       });
 
-      const q = 1 - fB;
+      const q = reduce ? 0 : 1 - fB;
       icons.forEach((a, i) => {
         const d = (i - ic) * 2;
         const sc = 0.75 + 0.25 * fB;
-        a.style.transform = `translate(${(d * 50 * q).toFixed(1)}px, ${(Math.abs(d) * 50 * q).toFixed(1)}px) scale(${sc.toFixed(3)})`;
+        a.style.transform =
+          q < 0.0005
+            ? 'none'
+            : `translate(${(d * 50 * q).toFixed(1)}px, ${(Math.abs(d) * 50 * q).toFixed(1)}px) scale(${sc.toFixed(3)})`;
       });
 
       if (rc) {
@@ -178,7 +181,9 @@ export default function ConnectSection({ connectData }) {
           <div className="cic">
             {/* GitHub */}
             <a href={cnUrl.github} aria-label="GitHub" target="_blank" rel="noopener">
-              <img src={githubLogo} alt="GitHub" draggable={false} />
+              <span className="cic-icon">
+                <img src={githubLogo} alt="GitHub" draggable={false} />
+              </span>
               <span className="cn" aria-hidden="true">
                 GitHub
               </span>
@@ -186,7 +191,9 @@ export default function ConnectSection({ connectData }) {
 
             {/* Gmail */}
             <a href={cnUrl.email} aria-label="Gmail">
-              <img src={gmailLogo} alt="Gmail" draggable={false} />
+              <span className="cic-icon">
+                <img src={gmailLogo} alt="Gmail" draggable={false} />
+              </span>
               <span className="cn" aria-hidden="true">
                 Gmail
               </span>
@@ -194,7 +201,9 @@ export default function ConnectSection({ connectData }) {
 
             {/* LinkedIn */}
             <a href={cnUrl.linkedin} aria-label="LinkedIn" target="_blank" rel="noopener">
-              <img src={linkedinLogo} alt="LinkedIn" draggable={false} />
+              <span className="cic-icon">
+                <img src={linkedinLogo} alt="LinkedIn" draggable={false} />
+              </span>
               <span className="cn" aria-hidden="true">
                 LinkedIn
               </span>

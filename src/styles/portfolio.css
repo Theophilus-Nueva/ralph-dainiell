@@ -273,11 +273,13 @@ html.on-home #hcon:active,html.on-home #hres:active{transform:translateY(0) scal
 .cl span.sp{width:.28em}
 .csub{margin:0;font:500 min(25px,5.6vw)/1.2 "Space Grotesk",system-ui,sans-serif;letter-spacing:-.025em;text-transform:uppercase;color:#2E7D32;text-align:center}
 .cic{display:flex;align-items:center;justify-content:center;gap:min(14px,2.4vw);perspective:500px}
-.cic a{display:block;width:min(76px,16vw);height:min(76px,16vw);flex:none;will-change:transform;-webkit-tap-highlight-color:transparent}
-.cic svg,.cic img{display:block;width:100%;height:100%;object-fit:contain;overflow:visible;filter:drop-shadow(0 4px 8px rgba(0,0,0,.16)) drop-shadow(0 .5px 1px rgba(0,0,0,.2));transition:transform .35s var(--ease)}
-.cic a:hover svg,.cic a:focus-visible svg,.cic a:hover img,.cic a:focus-visible img{transform:translateY(-6px) scale(1.08)}
-.cic a:focus-visible{outline:2px solid #2E7D32;outline-offset:6px;border-radius:18px}
-.cic a{position:relative}
+.cic a{display:block;width:min(76px,16vw);height:min(76px,16vw);flex:none;position:relative;will-change:transform;transform-origin:center;-webkit-tap-highlight-color:transparent}
+.cic-icon{display:block;width:100%;height:100%;position:relative;border-radius:min(16px,20%);overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.22),0 2px 6px rgba(0,0,0,.14);transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
+.cic-icon::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 -3px 8px rgba(255,255,255,.2),inset 0 1.5px 4px rgba(255,255,255,.15),inset 0 0 0 1px rgba(255,255,255,.08);transition:box-shadow .35s var(--ease)}
+.cic svg,.cic img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.cic a:hover .cic-icon,.cic a:focus-visible .cic-icon{transform:translateY(-6px) scale(1.08);box-shadow:0 16px 32px rgba(0,0,0,.28),0 4px 10px rgba(0,0,0,.18)}
+.cic a:hover .cic-icon::after,.cic a:focus-visible .cic-icon::after{box-shadow:inset 0 -4px 10px rgba(255,255,255,.28),inset 0 1.5px 5px rgba(255,255,255,.22),inset 0 0 0 1px rgba(255,255,255,.12)}
+.cic a:focus-visible{outline:2px solid #2E7D32;outline-offset:6px;border-radius:min(16px,20%)}
 .cn{position:absolute;top:100%;left:50%;margin-top:9px;padding:0 2px;white-space:nowrap;pointer-events:none;font:600 11px/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:-.01em;text-transform:uppercase;color:#7a7a7a;opacity:0;transform:translate(-50%,-4px);transition:opacity .25s var(--ease),transform .25s var(--ease)}
 .cic a:hover .cn,.cic a:focus-visible .cn{opacity:1;transform:translate(-50%,0)}
 .cft{position:absolute;left:0;right:0;bottom:max(28px,8vh);margin:0;text-align:center;font:600 min(14px,3.6vw)/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:-.01em;color:#4a4a4a}
