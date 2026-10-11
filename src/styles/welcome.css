@@ -4,7 +4,7 @@
 html.wc-lock,html.wc-lock body{overflow:hidden;overscroll-behavior:none}
 #wc{position:fixed;inset:0;z-index:9000;display:flex;align-items:center;padding:0 clamp(24px,9vw,170px);box-sizing:border-box;color:#000}
 /* while the welcome screen is up the hero (photo, role plate, text), the rail and the sound button stay hidden: only the particle background shows. They appear the moment it ends. */
-html.wc-hide #home .home,html.wc-hide #rail,html.wc-hide #hcon{visibility:hidden}
+html.wc-hide #home .home,html.wc-hide #rail,html.wc-hide #hcon,html.wc-hide #hres,html.wc-hide #hactions{visibility:hidden}
 #wct{margin:0;min-height:1.15em;font:400 clamp(2.4rem,6.2vw,6.4rem)/1.1 "Geist Pixel","Hiragino Sans","Yu Gothic","PingFang SC","Microsoft YaHei","Noto Sans CJK SC","Noto Sans JP",system-ui,sans-serif;color:#000;letter-spacing:-.01em;white-space:nowrap;will-change:transform,opacity;transition:opacity .45s,transform .6s cubic-bezier(.77,0,.18,1),filter .45s}
 #wct::after{content:"";display:inline-block;width:.36em;height:.74em;margin-left:.1em;background:#000;vertical-align:-.02em;animation:wcb 1.05s steps(1) infinite}
 #wct.typ::after{animation:none}

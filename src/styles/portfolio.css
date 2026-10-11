@@ -147,18 +147,47 @@ section.in .ttl span,section.in .line{transform:none}
 /* home dot pattern */
 #home .home{position:relative;z-index:1}
 section{isolation:isolate}
-/* ---- connect button: bottom right of HOME only. Click = jump to the last page (CONNECT). Hover = arrow swaps out diagonally + tiny lift + green ring ---- */
-#hcon{position:fixed;right:clamp(10px,1.2vw,18px);bottom:calc(clamp(14px,3.5vh,26px) + env(safe-area-inset-bottom,0px));z-index:10;display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 11px 0 13px;border-radius:9px;background:#222222;color:#fff;font:400 14px/1 "Geist Pixel",ui-monospace,Menlo,monospace;letter-spacing:.01em;text-decoration:none;white-space:nowrap;-webkit-tap-highlight-color:transparent;box-shadow:0 0 0 1px rgba(39,201,63,0),0 6px 16px rgba(0,0,0,.16);opacity:0;visibility:hidden;pointer-events:none;transform:translateY(8px);transition:opacity .35s,transform .45s var(--ease),box-shadow .35s,visibility 0s .35s}
-html.on-home #hcon{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:opacity .35s,transform .45s var(--ease),box-shadow .35s}
-html.on-home #hcon:hover,html.on-home #hcon:focus-visible{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(39,201,63,.45),0 10px 22px rgba(0,0,0,.2)}
-html.on-home #hcon:active{transform:translateY(0) scale(.96)}
-#hcon:focus-visible{outline:none}
+/* ---- floating action buttons: bottom right of HOME (Resume + Connect) ---- */
+#hactions{position:fixed;right:clamp(10px,1.2vw,18px);bottom:calc(clamp(14px,3.5vh,26px) + env(safe-area-inset-bottom,0px));z-index:10;display:inline-flex;align-items:center;gap:8px;opacity:0;visibility:hidden;pointer-events:none;transform:translateY(8px);transition:opacity .35s,transform .45s var(--ease),box-shadow .35s,visibility 0s .35s}
+html.on-home #hactions{opacity:1;visibility:visible;pointer-events:auto;transform:none;transition:opacity .35s,transform .45s var(--ease)}
+
+#hcon,#hres{position:relative;display:inline-flex;align-items:center;gap:7px;height:36px;padding:0 11px 0 13px;border-radius:9px;background:#222222;color:#fff;font:400 14px/1 "Geist Pixel",ui-monospace,Menlo,monospace;letter-spacing:.01em;text-decoration:none;white-space:nowrap;-webkit-tap-highlight-color:transparent;box-shadow:0 0 0 1px rgba(39,201,63,0),0 6px 16px rgba(0,0,0,.16);transition:transform .45s var(--ease),box-shadow .35s,background .35s}
+html.on-home #hcon:hover,html.on-home #hcon:focus-visible,html.on-home #hres:hover,html.on-home #hres:focus-visible{transform:translateY(-2px);box-shadow:0 0 0 1px rgba(39,201,63,.45),0 10px 22px rgba(0,0,0,.2)}
+html.on-home #hcon:active,html.on-home #hres:active{transform:translateY(0) scale(.96)}
+#hcon:focus-visible,#hres:focus-visible{outline:none}
+
+/* Connect button: arrow icon */
 #hcon .cbx-a{position:relative;display:block;flex:none;width:14px;height:14px;overflow:hidden}
 #hcon .cbx-a svg{position:absolute;inset:0;width:100%;height:100%;fill:none;stroke:#27C93F;stroke-width:3.4;stroke-linecap:round;stroke-linejoin:round;transition:transform .45s var(--ease)}
 #hcon .cbx-a .a2{transform:translate(-125%,125%)}
 #hcon:hover .a1,#hcon:focus-visible .a1{transform:translate(125%,-125%)}
 #hcon:hover .a2,#hcon:focus-visible .a2{transform:none}
-@media (prefers-reduced-motion:reduce){#hcon,#hcon .cbx-a svg{transition:none}html.on-home #hcon:hover,html.on-home #hcon:focus-visible,html.on-home #hcon:active{transform:none}#hcon:hover .a1,#hcon:focus-visible .a1{transform:none}#hcon:hover .a2,#hcon:focus-visible .a2{transform:translate(-125%,125%)}}
+
+/* Resume button: morphs into download icon + "download resume" on hover */
+#hres .rbx-i{position:relative;display:block;flex:none;width:14px;height:14px;overflow:hidden}
+#hres .rbx-i img{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;transition:opacity .35s var(--ease),transform .35s var(--ease)}
+#hres .rbx-i .i-res{opacity:1;transform:translateY(0) scale(1);filter:brightness(0) invert(1)}
+#hres .rbx-i .i-down{opacity:0;transform:translateY(-9px) scale(.75);filter:brightness(0) saturate(100%) invert(56%) sepia(85%) saturate(497%) hue-rotate(85deg) brightness(97%) contrast(92%)}
+#hres:hover .rbx-i .i-res,#hres:focus-visible .rbx-i .i-res{opacity:0;transform:translateY(9px) scale(.75)}
+#hres:hover .rbx-i .i-down,#hres:focus-visible .rbx-i .i-down{opacity:1;transform:translateY(0) scale(1)}
+
+#hres .cbx-t{display:inline-flex;align-items:center;position:relative}
+#hres .t-res{display:inline-block;max-width:80px;overflow:hidden;white-space:nowrap;transition:max-width .4s var(--ease),opacity .25s var(--ease),transform .3s var(--ease)}
+#hres .t-down{display:inline-block;max-width:0;overflow:hidden;white-space:nowrap;opacity:0;color:#27C93F;transition:max-width .4s var(--ease),opacity .25s var(--ease),transform .3s var(--ease)}
+#hres:hover .t-res,#hres:focus-visible .t-res{max-width:0;opacity:0;transform:translateY(-4px)}
+#hres:hover .t-down,#hres:focus-visible .t-down{max-width:150px;opacity:1;transform:translateY(0)}
+
+@media (prefers-reduced-motion:reduce){
+  #hactions,#hcon,#hres,#hcon .cbx-a svg,#hres .rbx-i img,#hres .t-res,#hres .t-down{transition:none}
+  html.on-home #hcon:hover,html.on-home #hcon:focus-visible,html.on-home #hcon:active,
+  html.on-home #hres:hover,html.on-home #hres:focus-visible,html.on-home #hres:active{transform:none}
+  #hcon:hover .a1,#hcon:focus-visible .a1{transform:none}
+  #hcon:hover .a2,#hcon:focus-visible .a2{transform:translate(-125%,125%)}
+  #hres:hover .rbx-i .i-res,#hres:focus-visible .rbx-i .i-res{opacity:0}
+  #hres:hover .rbx-i .i-down,#hres:focus-visible .rbx-i .i-down{opacity:1}
+  #hres:hover .t-res,#hres:focus-visible .t-res{max-width:0;opacity:0}
+  #hres:hover .t-down,#hres:focus-visible .t-down{max-width:150px;opacity:1}
+}
 
 /* ---- tiny green link arrow (the little "↗" that marks things you can press) ---- */
 .cic .cn{padding:0 2px 0 calc(2px + 1.23em)}
@@ -245,8 +274,8 @@ html.on-home #hcon:active{transform:translateY(0) scale(.96)}
 .csub{margin:0;font:500 min(25px,5.6vw)/1.2 "Space Grotesk",system-ui,sans-serif;letter-spacing:-.025em;text-transform:uppercase;color:#2E7D32;text-align:center}
 .cic{display:flex;align-items:center;justify-content:center;gap:min(14px,2.4vw);perspective:500px}
 .cic a{display:block;width:min(76px,16vw);height:min(76px,16vw);flex:none;will-change:transform;-webkit-tap-highlight-color:transparent}
-.cic svg{display:block;width:100%;height:100%;overflow:visible;filter:drop-shadow(0 4px 8px rgba(0,0,0,.16)) drop-shadow(0 .5px 1px rgba(0,0,0,.2));transition:transform .35s var(--ease)}
-.cic a:hover svg,.cic a:focus-visible svg{transform:translateY(-6px) scale(1.08)}
+.cic svg,.cic img{display:block;width:100%;height:100%;object-fit:contain;overflow:visible;filter:drop-shadow(0 4px 8px rgba(0,0,0,.16)) drop-shadow(0 .5px 1px rgba(0,0,0,.2));transition:transform .35s var(--ease)}
+.cic a:hover svg,.cic a:focus-visible svg,.cic a:hover img,.cic a:focus-visible img{transform:translateY(-6px) scale(1.08)}
 .cic a:focus-visible{outline:2px solid #2E7D32;outline-offset:6px;border-radius:18px}
 .cic a{position:relative}
 .cn{position:absolute;top:100%;left:50%;margin-top:9px;padding:0 2px;white-space:nowrap;pointer-events:none;font:600 11px/1 "Space Grotesk",system-ui,sans-serif;letter-spacing:-.01em;text-transform:uppercase;color:#7a7a7a;opacity:0;transform:translate(-50%,-4px);transition:opacity .25s var(--ease),transform .25s var(--ease)}
