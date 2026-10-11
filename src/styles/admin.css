@@ -18,6 +18,30 @@
   --admin-sans: 'Space Grotesk', -apple-system, BlinkMacSystemFont, sans-serif;
 }
 
+/* Unhide and normalize cursor in Admin Mode */
+html.on-admin,
+html.on-admin *,
+.admin-viewport,
+.admin-viewport * {
+  cursor: auto !important;
+}
+
+.admin-viewport button,
+.admin-viewport a,
+.admin-viewport [role="button"],
+.admin-viewport select,
+.admin-viewport .admin-btn,
+.admin-viewport .admin-tab,
+.admin-viewport .admin-chip-remove,
+.admin-viewport .admin-btn-icon {
+  cursor: pointer !important;
+}
+
+.admin-viewport input,
+.admin-viewport textarea {
+  cursor: text !important;
+}
+
 .admin-viewport {
   min-height: 100vh;
   background-color: var(--admin-bg);
@@ -590,44 +614,4 @@
   font-size: 0.68rem;
   padding: 0.15rem 0.5rem;
   border-radius: 4px;
-}
-
-/* Floating Admin Access Button on public site */
-.admin-public-switch {
-  position: fixed;
-  bottom: 1.5rem;
-  left: 1.5rem;
-  z-index: 9999;
-  background: rgba(14, 15, 18, 0.85);
-  backdrop-filter: blur(8px);
-  -webkit-backdrop-filter: blur(8px);
-  border: 1px solid rgba(255, 255, 255, 0.12);
-  color: #aaa;
-  font-family: var(--admin-mono);
-  font-size: 0.74rem;
-  font-weight: 600;
-  padding: 0.45rem 0.85rem;
-  border-radius: 30px;
-  cursor: pointer;
-  display: flex;
-  align-items: center;
-  gap: 0.45rem;
-  transition: all 0.2s ease;
-  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.35);
-  text-decoration: none;
-}
-
-.admin-public-switch:hover {
-  background: rgba(0, 200, 224, 0.15);
-  border-color: var(--admin-accent-cyan);
-  color: #fff;
-  transform: translateY(-2px);
-  box-shadow: 0 6px 20px rgba(0, 200, 224, 0.25);
-}
-
-.admin-public-switch-dot {
-  width: 6px;
-  height: 6px;
-  border-radius: 50%;
-  background: var(--admin-accent-cyan);
 }

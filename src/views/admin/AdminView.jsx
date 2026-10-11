@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import '../../styles/admin.css';
 import HomeTab from './HomeTab';
 import WorksTab from './WorksTab';
@@ -18,6 +18,13 @@ export default function AdminView({
   const [toastMessage, setToastMessage] = useState(null);
   const [showExportModal, setShowExportModal] = useState(false);
   const [copied, setCopied] = useState(false);
+
+  useEffect(() => {
+    document.documentElement.classList.add('on-admin');
+    return () => {
+      document.documentElement.classList.remove('on-admin');
+    };
+  }, []);
 
   const showToast = (msg) => {
     setToastMessage(msg);

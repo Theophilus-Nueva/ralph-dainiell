@@ -38,21 +38,22 @@ export default function App() {
     };
   }, []);
 
-  // When entering admin mode, unlock any welcome screen classes
+  // When entering admin mode, unlock any welcome screen classes and unhide cursor
   useEffect(() => {
     if (isAdmin && !isPreviewMode) {
       window.WCB = false;
       document.documentElement.classList.remove('wc-hide', 'wc-lock');
+      document.documentElement.classList.add('on-admin');
+    } else {
+      document.documentElement.classList.remove('on-admin');
     }
+
+    return () => {
+      document.documentElement.classList.remove('on-admin');
+    };
   }, [isAdmin, isPreviewMode]);
 
-  // Admin routing helpers
-  const navigateToAdmin = useCallback(() => {
-    window.history.pushState({}, '', '/admin');
-    setIsAdmin(true);
-    setIsPreviewMode(false);
-    window.scrollTo(0, 0);
-  }, []);
+  // Admin routing helper
 
   const navigateToPublic = useCallback(() => {
     window.history.pushState({}, '', '/');
@@ -100,7 +101,6 @@ export default function App() {
       isPreviewMode={isPreviewMode}
       onBackToAdmin={() => setIsPreviewMode(false)}
       onExitAdmin={navigateToPublic}
-      onOpenAdmin={navigateToAdmin}
     />
   );
 }

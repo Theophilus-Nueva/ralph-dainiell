@@ -236,7 +236,7 @@ html.on-home #hcon:active,html.on-home #hres:active{transform:translateY(0) scal
 @media (prefers-reduced-motion:reduce){.sh i{animation:none}.ttl span,.line,.idx,.rv,.ph,#roll,.cd,.cbtn,.cbtn span,.cmx,.cbtn svg{transition:none}.cbtn.ping::after{animation:none}.cmx .cw.rv,.cmx.open .cw.rv{transition:none}#cur.hov::before{animation:none}.tbrow{transition:none}}
 
 /* cursor: two looks, same idea as the certificate VERIFY label -- default = quiet, hover (anything clickable, every certificate card) = lit */
-@media (hover:hover) and (pointer:fine){html,html *{cursor:none!important}}
+@media (hover:hover) and (pointer:fine){html:not(.on-admin),html:not(.on-admin) *{cursor:none!important}}
 #cur{position:fixed;left:0;top:0;width:0;height:0;pointer-events:none;z-index:9999;opacity:0;will-change:transform;transition:opacity .2s;mix-blend-mode:difference}
 #cur::before{content:"";position:absolute;left:0;top:0;width:20px;height:20px;margin:-10px 0 0 -10px;border-radius:6px;background:#e8e8e8;opacity:1;transform-origin:50% 50%;transition:opacity .35s,width .28s var(--ease),height .28s var(--ease),margin .28s var(--ease),border-radius .28s var(--ease),background-color .28s,box-shadow .28s,transform .2s}
 #cur.on{opacity:1}

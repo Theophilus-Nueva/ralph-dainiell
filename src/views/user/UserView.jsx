@@ -18,7 +18,6 @@ export default function UserView({
   isPreviewMode = false,
   onBackToAdmin,
   onExitAdmin,
-  onOpenAdmin,
 }) {
   const pulseRef = useRef(null);
 
@@ -94,20 +93,6 @@ export default function UserView({
             </button>
           </div>
         </div>
-      )}
-
-      {/* Floating Admin Switch pill on the public view */}
-      {!isAdmin && (
-        <button
-          type="button"
-          className="admin-public-switch"
-          onClick={onOpenAdmin}
-          title="Open Admin Edit Console (/admin)"
-          aria-label="Open Admin Edit Console"
-        >
-          <span className="admin-public-switch-dot"></span>
-          <span>/admin</span>
-        </button>
       )}
 
       <SvgDefs />
