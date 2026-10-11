@@ -10,9 +10,9 @@ section{position:relative;min-height:100vh;display:flex;align-items:center;justi
 section.in .rv{opacity:1;transform:none}
 /* home */
 .home{display:flex;align-items:flex-end;gap:.9vw}
-.ph{width:clamp(170px,27.6vw,520px);aspect-ratio:371/344;flex:none;clip-path:inset(100% 0 0 0);transition:clip-path 1.1s var(--ease)}
+.ph{width:clamp(170px,27.6vw,520px);aspect-ratio:1;flex:none;clip-path:inset(100% 0 0 0);transition:clip-path 1.1s var(--ease)}
 .ph img,.ph svg{display:block;width:100%;height:100%;object-fit:contain}
-.ph>img{will-change:transform;transform:translateZ(0)}
+.ph>img,.xr img{will-change:transform;transform:translateZ(0)}
 section.in .ph{clip-path:inset(0)}
 /* x-ray lens: a soft round window that follows the cursor over the portrait and shows it as a cool negative */
 .ph{position:relative}
@@ -225,10 +225,11 @@ html.on-home #hcon:active{transform:translateY(0) scale(.96)}
 .gh .gt a{color:#cfcfd3;text-decoration:none;font-weight:500}
 .gh .gt span{white-space:nowrap}
 .gh{position:relative}
-.ghl{position:absolute;left:0;top:0;border-radius:50%;pointer-events:none;z-index:5;opacity:0;scale:.72;transition:opacity .2s ease,scale .32s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 0 1.5px rgba(255,255,255,.5),0 0 0 4px rgba(14,14,15,.9),0 10px 26px rgba(0,0,0,.5)}
+.ghl{position:absolute;left:0;top:0;margin:0;border-radius:50%;pointer-events:none;z-index:5;opacity:0;scale:.72;transition:opacity .2s ease,scale .32s cubic-bezier(.2,.8,.2,1);box-shadow:0 0 0 1.5px rgba(255,255,255,.5),0 0 0 4px rgba(14,14,15,.9),0 10px 26px rgba(0,0,0,.5)}
 .ghl.on{opacity:1;scale:1}
 .gh .gt,.gh .gf{transition:opacity .6s ease}
 .gh canvas.ghi{position:absolute;left:-90px;top:-34px;width:calc(100% + 170px);height:calc(100% + 60px);margin:0;pointer-events:none;z-index:4}
+.gh canvas.ghl{margin:0}
 .gh{transition:background-color .7s ease,box-shadow .7s ease}.gh.gi{background-color:transparent;box-shadow:none}.gh.gi .gt,.gh.gi .gf{opacity:0}
 #cur.on.gone{opacity:0}
 .gh canvas:focus{outline:none}.gh canvas{display:block;width:100%;margin:12px 0 11px}

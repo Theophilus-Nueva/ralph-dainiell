@@ -169,6 +169,7 @@ export default function StackSection() {
     let OH = 0;
     let ORD = [];
     let ZS = new Float32Array(0);
+    const PL = new Float32Array(8);
 
     const lerp = (a, b, t) => a + (b - a) * t;
     const cl = (x) => (x > 0 ? (x < 1 ? x : 1) : 0);
@@ -186,11 +187,8 @@ export default function StackSection() {
       return [n >> 16, (n >> 8) & 255, n & 255];
     };
     const GC = GH_COL.map(rgb);
-    const mix = (a, b, t, f) =>
-      `rgb(${Math.round(lerp(a[0], b[0], t) * f)},${Math.round(lerp(a[1], b[1], t) * f)},${Math.round(
-        lerp(a[2], b[2], t) * f
-      )})`;
-    const riseAt = (t, wk, wks, dy) => eo3((t - ((wks > 1 ? wk / (wks - 1) : 0) * 0.36 + (dy / 6) * 0.06)) / (1 - WAVE));
+    const riseAt = (t, wk, wks, dy) =>
+      eo3((t - ((wks > 1 ? wk / (wks - 1) : 0) * 0.36 + (dy / 6) * 0.06)) / (1 - WAVE));
 
     function sizeOv() {
       const g = ov.parentElement;
@@ -337,79 +335,288 @@ export default function StackSection() {
       );
 
       ox.globalAlpha = 1;
-      const crd = sm(0.65, 0.1, e) * 0.5;
-      const PL = new Float32Array(8);
+      const kq = sm(0.15, 0.7, e);
+      const base = (l) => GC[l];
+      const rg = (c, f) =>
+        'rgb(' +
+        Math.round(c[0] * f) +
+        ',' +
+        Math.round(c[1] * f) +
+        ',' +
+        Math.round(c[2] * f) +
+        ')';
 
-      for (const i of ORD) {
-        const q = D[i];
-        if (!q || q.n < 0) continue;
+      // Plinth (solid base of a GitHub Skyline model)
+      if (sk3 > 0.01) {
+        const xa = -PM;
+        const xb = COLS + PM;
+        const ya = -PM;
+        const yb = ROWS + PM;
+        const P = (x, y, z) => [px(x, y), py(x, y, z)];
+        const FL = [P(xa, yb, 0), P(xb, yb, 0), P(xb + PS, yb + PS, -PH), P(xa - PS, yb + PS, -PH)];
+        const EN = [P(xb, ya, 0), P(xb, yb, 0), P(xb + PS, yb + PS, -PH), P(xb + PS, ya - PS, -PH)];
+        const TP = [P(xa, ya, 0), P(xb, ya, 0), P(xb, yb, 0), P(xa, yb, 0)];
+
+        const poly = (pt, fill) => {
+          ox.beginPath();
+          ox.moveTo(pt[0][0], pt[0][1]);
+          for (let j = 1; j < pt.length; j++) ox.lineTo(pt[j][0], pt[j][1]);
+          ox.closePath();
+          ox.fillStyle = fill;
+          ox.fill();
+        };
+
+        ox.save();
+        ox.globalAlpha = sk3;
+        ox.shadowColor = 'rgba(0,0,0,.32)';
+        ox.shadowBlur = 16 * sk3;
+        ox.shadowOffsetY = 9 * sk3;
+        poly([FL[3], FL[2], EN[2], EN[3], TP[1], TP[0], TP[3]], '#1b1b1f');
+        ox.shadowColor = 'transparent';
+
+        let g = ox.createLinearGradient(0, FL[0][1], 0, FL[3][1]);
+        g.addColorStop(0, '#56565e');
+        g.addColorStop(1, '#1f1f23');
+        poly(FL, g);
+
+        g = ox.createLinearGradient(0, EN[0][1], 0, EN[2][1]);
+        g.addColorStop(0, '#2c2c31');
+        g.addColorStop(1, '#141417');
+        poly(EN, g);
+
+        poly(TP, '#2a2a2f');
+        ox.strokeStyle = 'rgba(255,255,255,.14)';
+        ox.lineWidth = 0.8;
+        ox.beginPath();
+        ox.moveTo(TP[3][0], TP[3][1]);
+        ox.lineTo(TP[2][0], TP[2][1]);
+        ox.lineTo(TP[1][0], TP[1][1]);
+        ox.stroke();
+
+        // Engraved text on the front face
+        if (sk3 > 0.5) {
+          const yf = yb + PS * 0.5;
+          const zf = -PH * 0.5;
+          const kk = 0.1;
+          const mono =
+            (getComputedStyle(document.documentElement).getPropertyValue('--mono') || '').trim() ||
+            'ui-monospace,Menlo,monospace';
+          ox.translate(0, 0);
+          ox.setTransform(
+            dpr * cs * S,
+            dpr * sn * se * S,
+            0,
+            dpr * ce * S,
+            dpr * (OX - yf * sn * S),
+            dpr * (OY + yf * cs * se * S)
+          );
+          ox.font = '700 10px ' + mono;
+          ox.textBaseline = 'middle';
+          ox.globalAlpha = (sk3 - 0.5) * 2;
+          const put = (txt, x, al) => {
+            ox.save();
+            ox.scale(kk, kk);
+            ox.textAlign = al;
+            ox.fillStyle = 'rgba(255,255,255,.28)';
+            ox.fillText(txt, x / kk + 0.4, -zf / kk + 0.4);
+            ox.fillStyle = 'rgba(0,0,0,.78)';
+            ox.fillText(txt, x / kk, -zf / kk);
+            ox.restore();
+          };
+          ox.letterSpacing = '2px';
+          put(`@${GH_USER.toUpperCase()}`, 2.2, 'left');
+          put(String(new Date().getFullYear()), COLS - 2.2, 'right');
+        }
+        ox.restore();
+        ox.setTransform(dpr, 0, 0, dpr, 0, 0);
+      }
+
+      const cell1 = (i, q) => {
         const c = (i / ROWS) | 0;
         const r = i % ROWS;
+        const l = q.l;
+        const col = base(l);
+        const w = lerp(2 * GH_R[l], 0.9, e);
+        const off = (1 - w) / 2;
+        const x0 = c + off;
+        const y0 = r + off;
+        const x1 = x0 + w;
+        const y1 = y0 + w;
         const z = ZS[i];
-        const w0 = lerp(2 * GH_R[q.l], 0.9, e);
-        const o = (1 - w0) / 2;
-        const x = c + o;
-        const y = r + o;
-        const lev = q.l;
-        const gc = GC[lev];
-        const sc_ = SKY[lev] || SKY[0];
+        const rad = lerp(w / 2, 0.08, kq) * S;
+        const tall = z * ce * S;
 
-        // Top cap
-        PL[0] = px(x, y);
-        PL[1] = py(x, y, z);
-        PL[2] = px(x + w0, y);
-        PL[3] = py(x + w0, y, z);
-        PL[4] = px(x + w0, y + w0);
-        PL[5] = py(x + w0, y + w0, z);
-        PL[6] = px(x, y + w0);
-        PL[7] = py(x, y + w0, z);
+        if (tall > 0.35) {
+          if (w * cs * S > 0.35) {
+            const yT = py(x0, y1, z);
+            const yB = py(x0, y1, 0);
+            const g = ox.createLinearGradient(0, yT, 0, yB);
+            g.addColorStop(0, rg(col, 0.9));
+            g.addColorStop(1, rg(col, 0.58));
+            PL[0] = px(x0, y1);
+            PL[1] = yB;
+            PL[2] = px(x1, y1);
+            PL[3] = py(x1, y1, 0);
+            PL[4] = px(x1, y1);
+            PL[5] = py(x1, y1, z);
+            PL[6] = px(x0, y1);
+            PL[7] = yT;
+            ox.beginPath();
+            qpath(ox, PL, 0);
+            ox.fillStyle = g;
+            ox.fill();
+          }
+          if (w * sn * S > 0.35) {
+            const yT = py(x1, y0, z);
+            const yB = py(x1, y0, 0);
+            const g = ox.createLinearGradient(0, yT, 0, yB);
+            g.addColorStop(0, rg(col, 0.68));
+            g.addColorStop(1, rg(col, 0.4));
+            PL[0] = px(x1, y0);
+            PL[1] = yB;
+            PL[2] = px(x1, y1);
+            PL[3] = py(x1, y1, 0);
+            PL[4] = px(x1, y1);
+            PL[5] = py(x1, y1, z);
+            PL[6] = px(x1, y0);
+            PL[7] = yT;
+            ox.beginPath();
+            qpath(ox, PL, 0);
+            ox.fillStyle = g;
+            ox.fill();
+          }
+        }
 
-        ox.fillStyle = mix(gc, sc_, e, 1);
+        PL[0] = px(x0, y0);
+        PL[1] = py(x0, y0, z);
+        PL[2] = px(x1, y0);
+        PL[3] = py(x1, y0, z);
+        PL[4] = px(x1, y1);
+        PL[5] = py(x1, y1, z);
+        PL[6] = px(x0, y1);
+        PL[7] = py(x0, y1, z);
         ox.beginPath();
-        qpath(ox, PL, (w0 * S) * crd);
+        qpath(ox, PL, rad);
+        ox.fillStyle = rg(col, 1);
+        ox.fill();
+
+        if (tall > 1.2 && sk3 > 0.05) {
+          ox.strokeStyle = 'rgba(255,255,255,' + (0.3 * sk3).toFixed(3) + ')';
+          ox.lineWidth = 0.7;
+          ox.stroke();
+        }
+        if (i === TODAY && e < 0.4) {
+          ox.strokeStyle = 'rgba(255,255,255,' + (1 - e / 0.4).toFixed(2) + ')';
+          ox.lineWidth = 1;
+          ox.beginPath();
+          ox.arc(px(c + 0.5, r + 0.5), py(c + 0.5, r + 0.5, z), (w / 2) * S + 2, 0, 6.2831853);
+          ox.stroke();
+        }
+      };
+
+      ox.globalAlpha = 1 - sk3;
+      for (let k = 0; k < n; k++) {
+        const i = ORD[k];
+        const q = D[i];
+        if (q.n === 0) cell1(i, q);
+      }
+      ox.globalAlpha = 1;
+
+      if (sk3 > 0.02) {
+        ox.beginPath();
+        for (let k = 0; k < n; k++) {
+          const i = ORD[k];
+          const q = D[i];
+          const z = ZS[i];
+          if (q.n <= 0 || z < 0.5) continue;
+          const c = (i / ROWS) | 0;
+          const r = i % ROWS;
+          const x0 = c + 0.05;
+          const y0 = r + 0.05;
+          const x1 = c + 0.95;
+          const y1 = r + 0.95;
+          const dx = z * 0.3;
+          const dy = z * 0.1;
+          const pts = [
+            [x0, y0],
+            [x1, y0],
+            [x1, y1],
+            [x0, y1],
+            [x0 + dx, y0 + dy],
+            [x1 + dx, y0 + dy],
+            [x1 + dx, y1 + dy],
+            [x0 + dx, y1 + dy],
+          ]
+            .map(([X, Y]) => [px(X, Y), py(X, Y, 0)])
+            .sort((a, b) => a[0] - b[0] || a[1] - b[1]);
+
+          const cr2 = (o, a, b) => (a[0] - o[0]) * (b[1] - o[1]) - (a[1] - o[1]) * (b[0] - o[0]);
+          const lo = [];
+          const up = [];
+          for (const p of pts) {
+            while (lo.length > 1 && cr2(lo[lo.length - 2], lo[lo.length - 1], p) <= 0) lo.pop();
+            lo.push(p);
+          }
+          for (let j = pts.length - 1; j >= 0; j--) {
+            const p = pts[j];
+            while (up.length > 1 && cr2(up[up.length - 2], up[up.length - 1], p) <= 0) up.pop();
+            up.push(p);
+          }
+          const h = lo.slice(0, -1).concat(up.slice(0, -1));
+          ox.moveTo(h[0][0], h[0][1]);
+          for (let j = 1; j < h.length; j++) ox.lineTo(h[j][0], h[j][1]);
+          ox.closePath();
+        }
+        ox.fillStyle = 'rgba(0,0,0,' + (0.34 * sk3).toFixed(3) + ')';
         ox.fill();
       }
+
+      for (let k = 0; k < n; k++) {
+        const i = ORD[k];
+        const q = D[i];
+        if (q.n > 0) cell1(i, q);
+      }
+      ox.globalAlpha = 1;
     }
 
-    // Magnetic Lens over contribution dots
-    const lens = document.createElement('div');
+    // Magnifying Lens canvas directly appended to .gh
+    const LR = 46;
+    const Z = 2.6;
+    const lens = document.createElement('canvas');
+    const lx = lens.getContext('2d');
     lens.className = 'ghl';
-    const lxCv = document.createElement('canvas');
-    const lx = lxCv.getContext('2d');
-    lens.appendChild(lxCv);
+    lens.setAttribute('aria-hidden', 'true');
     cv.parentElement.appendChild(lens);
 
-    const LR = 32;
-    const Z = 2.4;
-
     function sizeLens() {
-      lxCv.width = LR * 2 * dpr;
-      lxCv.height = LR * 2 * dpr;
-      lxCv.style.width = `${LR * 2}px`;
-      lxCv.style.height = `${LR * 2}px`;
+      lens.style.width = `${2 * LR}px`;
+      lens.style.height = `${2 * LR}px`;
+      lens.width = Math.round(2 * LR * dpr);
+      lens.height = Math.round(2 * LR * dpr);
     }
 
     function drawLens() {
-      if (!lens.classList.contains('on')) return;
-      const k = reduce ? 1 : 0.28;
-      sx += (tx - sx) * k;
-      sy += (ty - sy) * k;
-      lens.style.transform = `translate3d(${(sx - LR).toFixed(1)}px, ${(sy - LR).toFixed(1)}px, 0)`;
+      if (lc < 0) return;
+      sx += (tx - sx) * 0.32;
+      sy += (ty - sy) * 0.32;
+      if (Math.abs(tx - sx) < 0.04) sx = tx;
+      if (Math.abs(ty - sy) < 0.04) sy = ty;
+      lens.style.transform = `translate(${(cv.offsetLeft + sx - LR).toFixed(1)}px,${(cv.offsetTop + sy - LR).toFixed(1)}px)`;
 
       lx.setTransform(dpr, 0, 0, dpr, 0, 0);
       lx.clearRect(0, 0, 2 * LR, 2 * LR);
+      lx.fillStyle = '#0e0e0f';
+      lx.fillRect(0, 0, 2 * LR, 2 * LR);
       lx.save();
       lx.beginPath();
       lx.arc(LR, LR, LR, 0, 6.2831853);
       lx.clip();
-      lx.fillStyle = '#0e0e0f';
-      lx.fillRect(0, 0, 2 * LR, 2 * LR);
 
-      const span = (LR / Z) * 1.4;
-      const c0 = Math.max(0, Math.floor((sx - span) / cell));
-      const c1 = Math.min(COLS - 1, Math.ceil((sx + span) / cell));
-      const w0 = Math.max(0, Math.floor((sy - span) / cell));
-      const w1 = Math.min(ROWS - 1, Math.ceil((sy + span) / cell));
+      const r0 = LR / Z / cell + 1;
+      const c0 = Math.max(0, Math.floor(sx / cell - r0));
+      const c1 = Math.min(COLS - 1, Math.ceil(sx / cell + r0));
+      const w0 = Math.max(0, Math.floor(sy / cell - r0));
+      const w1 = Math.min(ROWS - 1, Math.ceil(sy / cell + r0));
 
       for (let c = c0; c <= c1; c++) {
         for (let r = w0; r <= w1; r++) {
@@ -647,7 +854,7 @@ export default function StackSection() {
                   @{GH_USER.toUpperCase()}
                 </a>
               </div>
-              <canvas id="ghc" ref={cvRef} aria-label={`GitHub contribution graph for @${GH_USER}`} />
+              <canvas id="ghc" ref={cvRef} tabIndex={0} aria-label={`GitHub contribution graph for @${GH_USER}`} />
               <div className="gf">
                 <span id="ghn" ref={ghnRef}></span>
               </div>
