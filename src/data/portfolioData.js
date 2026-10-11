@@ -1,5 +1,5 @@
 // Portfolio data definitions
-import pfpPortrait from '../assets/PFP.svg';
+import pfpPortrait from '../assets/ralph-dainiell-transparent.png';
 import letsdefendLogo from '../assets/logos/letsdefend.png';
 import tryhackmeLogo from '../assets/logos/tryhackme.svg';
 import packtLogo from '../assets/logos/packt.png';
