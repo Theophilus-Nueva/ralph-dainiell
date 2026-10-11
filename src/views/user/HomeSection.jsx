@@ -1,11 +1,15 @@
 import React, { useEffect, useRef } from 'react';
-import ParticlesBackground from '../components/ParticlesBackground';
-import { PHOTO, HERO_WORDS, HERO_COLS, HERO_SET } from '../data/portfolioData';
-import { FSX, SFX } from '../lib/sound';
+import ParticlesBackground from '../../components/ParticlesBackground';
+import { PHOTO, HERO_WORDS, HERO_COLS, HERO_SET } from '../../data/portfolioData';
+import { FSX, SFX } from '../../lib/sound';
 
 const SEQ = [..." ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789"];
 
-export default function HomeSection() {
+export default function HomeSection({ heroWords, photo, name }) {
+  const words = heroWords && heroWords.length > 0 ? heroWords : HERO_WORDS;
+  const photoSrc = photo || PHOTO;
+  const homeName = name || 'Ralph Dainiell Gonzaga';
+
   const containerRef = useRef(null);
   const phRef = useRef(null);
   const row1Ref = useRef(null);
@@ -208,7 +212,7 @@ export default function HomeSection() {
       const loopWords = (g) => {
         const t0 = performance.now();
         goWord(
-          HERO_WORDS[idx % HERO_WORDS.length],
+          words[idx % words.length],
           () => {
             if (g !== gen) return;
             idx++;
@@ -256,7 +260,7 @@ export default function HomeSection() {
           this.reset();
           const g = gen;
           if (reduce) {
-            goWord(HERO_WORDS[0], null, g);
+            goWord(words[0], null, g);
             return;
           }
           setTimeout(() => {
@@ -319,7 +323,7 @@ export default function HomeSection() {
         xr = document.createElement('div');
         xr.className = 'xr';
         xr.setAttribute('aria-hidden', 'true');
-        xr.innerHTML = `<img src="${PHOTO}" alt="" class="xs" draggable="false"><img src="${PHOTO}" alt="" class="xn" draggable="false">`;
+        xr.innerHTML = `<img src="${photoSrc}" alt="" class="xs" draggable="false"><img src="${photoSrc}" alt="" class="xn" draggable="false">`;
         ph.appendChild(xr);
       }
       if (!xrr) {
@@ -587,7 +591,7 @@ export default function HomeSection() {
       <ParticlesBackground containerRef={containerRef} />
       <div className="home">
         <div className="ph" ref={phRef}>
-          <img src={PHOTO} alt="Ralph Dainiell Gonzaga" />
+          <img src={photoSrc} alt={homeName} />
         </div>
         <div className="hx">
           <h1 className="nm" aria-label="RALPH DAINIELL GONZAGA">

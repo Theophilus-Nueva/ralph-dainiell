@@ -1,6 +1,6 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ParticlesBackground from '../components/ParticlesBackground';
-import { WORKS_TABS, APPS, LAB } from '../data/portfolioData';
+import ParticlesBackground from '../../components/ParticlesBackground';
+import { WORKS_TABS, APPS, LAB } from '../../data/portfolioData';
 
 const TL_SVGS = {
   Swift: '<svg class="tl" viewBox="0 0 128 128" aria-label="Swift"><path d="M117 84C98 111 61 123 31 113c23-11 39-29 44-42-17 6-41 2-53-7 19-3 36-12 47-24C52 41 38 30 20 23c29 0 54 13 69 29C83 34 70 17 52 7c32 10 59 34 71 63 2 4 4 9 4 14z" fill="#f05138"/></svg>',
@@ -11,7 +11,10 @@ const TL_SVGS = {
   Supabase: '<svg class="tl" viewBox="130 20 610 610" aria-label="Supabase"><defs><linearGradient id="tsb" x1="450" y1="280" x2="680" y2="400" gradientUnits="userSpaceOnUse"><stop offset="0" stop-color="#249361"/><stop offset="1" stop-color="#3ecf8e"/></linearGradient></defs><path d="M405 58L178 352 L432 385Z" fill="#3ecf8e" stroke="#3ecf8e" stroke-width="44" stroke-linejoin="round"/><path d="M432 262H660L690 300 L460 585 L437 565Z" fill="url(#tsb)" stroke="url(#tsb)" stroke-width="44" stroke-linejoin="round"/></svg>',
 };
 
-export default function WorksSection() {
+export default function WorksSection({ apps, lab }) {
+  const appList = apps && apps.length > 0 ? apps : APPS;
+  const labData = lab || LAB;
+
   const containerRef = useRef(null);
   const [activeTab, setActiveTab] = useState(0); // 0 = iOS App, 1 = CyberSec Lab
   const [activeApp, setActiveApp] = useState(0);
@@ -160,7 +163,7 @@ export default function WorksSection() {
     }
   };
 
-  const currentApp = APPS[activeApp] || APPS[0];
+  const currentApp = appList[activeApp] || appList[0];
   const appScreens = currentApp[5] || [];
 
   return (
@@ -243,11 +246,11 @@ export default function WorksSection() {
           {/* CyberSec Lab Tab */}
           <article className={`wkc lab ${activeTab === 1 ? 'on' : ''}`} role="tabpanel">
             <div className="lbt">
-              <h3>{LAB.title}</h3>
-              <p>{LAB.desc}</p>
+              <h3>{labData.title}</h3>
+              <p>{labData.desc}</p>
               <div className="lbb">
-                {LAB.badge ? (
-                  <img src={LAB.badge} alt="" draggable="false" />
+                {labData.badge ? (
+                  <img src={labData.badge} alt="" draggable="false" />
                 ) : (
                   <svg viewBox="0 0 142 172" role="img" aria-label="TryHackMe Certified SAL1 badge">
                     <defs>
@@ -325,7 +328,7 @@ export default function WorksSection() {
                 )}
               </div>
               <div className="lbl">
-                {LAB.links?.map((f) =>
+                {labData.links?.map((f) =>
                   f[1] !== '#' ? (
                     <a key={f[0]} className="try" href={f[1]} target="_blank" rel="noopener">
                       {f[0]}
@@ -342,11 +345,11 @@ export default function WorksSection() {
             </div>
             <div className="wkv">
               <div className="lbm">
-                {LAB.media ? (
-                  /\.(mp4|webm|mov)(\?|$)/i.test(LAB.media) ? (
-                    <video src={LAB.media} autoPlay muted loop playsInline />
+                {labData.media ? (
+                  /\.(mp4|webm|mov)(\?|$)/i.test(labData.media) ? (
+                    <video src={labData.media} autoPlay muted loop playsInline />
                   ) : (
-                    <img src={LAB.media} alt="" draggable="false" />
+                    <img src={labData.media} alt="" draggable="false" />
                   )
                 ) : (
                   <span>screenshot or the video of the screenrecord here</span>
@@ -360,9 +363,9 @@ export default function WorksSection() {
         <div className={`dw rv ${activeTab !== 0 ? 'hid' : ''}`} style={{ '--d': 3 }}>
           <div className="mdock" role="tablist" aria-label="Choose an app" ref={dockRef}>
             <div className="mdi" ref={dockInnerRef}>
-              {APPS.map((a, n) => (
+              {appList.map((a, n) => (
                 <button
-                  key={a[1]}
+                  key={a[1] + n}
                   ref={(el) => (dockItemsRef.current[n] = el)}
                   type="button"
                   className={`mdk ${activeApp === n ? 'on' : ''}`}

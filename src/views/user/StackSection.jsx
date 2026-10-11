@@ -1,8 +1,9 @@
 import React, { useEffect, useRef } from 'react';
-import ParticlesBackground from '../components/ParticlesBackground';
-import { STACK, GH_USER, GH_COL, GH_R, GH_SNAP } from '../data/portfolioData';
+import ParticlesBackground from '../../components/ParticlesBackground';
+import { STACK, GH_USER, GH_COL, GH_R, GH_SNAP } from '../../data/portfolioData';
 
-export default function StackSection() {
+export default function StackSection({ stack }) {
+  const stackList = stack && stack.length > 0 ? stack : STACK;
   const containerRef = useRef(null);
   const cvRef = useRef(null);
   const ghhRef = useRef(null);
@@ -863,7 +864,7 @@ export default function StackSection() {
         </div>
 
         {/* Stack Groups */}
-        {STACK.map(([g, items, tight], i) => (
+        {stackList.map(([g, items, tight], i) => (
           <div key={g} className={`grp rv ${tight ? 'tight' : ''}`} style={{ '--d': i }}>
             <h3
               dangerouslySetInnerHTML={{

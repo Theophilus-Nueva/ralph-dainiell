@@ -1,16 +1,19 @@
 import React, { useEffect, useRef, useState } from 'react';
-import ParticlesBackground from '../components/ParticlesBackground';
-import { CERT, LOGO, SHOW_CERTS } from '../data/portfolioData';
+import ParticlesBackground from '../../components/ParticlesBackground';
+import { CERT, LOGO, SHOW_CERTS } from '../../data/portfolioData';
 
-export default function CertificateSection() {
+export default function CertificateSection({ certs, showCount }) {
   const containerRef = useRef(null);
   const [isOpen, setIsOpen] = useState(false);
   const [isDone, setIsDone] = useState(false);
   const [isPing, setIsPing] = useState(false);
   const btnRef = useRef(null);
 
-  const initialCerts = CERT.slice(0, SHOW_CERTS);
-  const extraCerts = CERT.slice(SHOW_CERTS);
+  const certList = certs && certs.length > 0 ? certs : CERT;
+  const limit = showCount || SHOW_CERTS;
+
+  const initialCerts = certList.slice(0, limit);
+  const extraCerts = certList.slice(limit);
 
   // 1. Certificate card viewport blur easing
   useEffect(() => {
@@ -106,7 +109,7 @@ export default function CertificateSection() {
         className="cw rv"
         style={{
           '--d': (n % 4) * 0.5 + Math.floor(n / 4) * 0.8 + 1,
-          '--k': Math.max(0, n - SHOW_CERTS),
+          '--k': Math.max(0, n - limit),
         }}
       >
         <Tag
@@ -159,7 +162,7 @@ export default function CertificateSection() {
           >
             <div className="cmi">
               <div className="cgrid cg2">
-                {extraCerts.map((cert, n) => renderCard(cert, SHOW_CERTS + n))}
+                {extraCerts.map((cert, n) => renderCard(cert, limit + n))}
               </div>
             </div>
           </div>

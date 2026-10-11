@@ -1,18 +1,23 @@
 import React, { useEffect, useRef } from 'react';
-import ParticlesBackground from '../components/ParticlesBackground';
+import ParticlesBackground from '../../components/ParticlesBackground';
 import {
   CN_TEXT,
   CN_SUB,
   SCHEDULE_URL,
-  SCHED_OK,
   SCHED_MAIL,
   CN_URL,
-} from '../data/portfolioData';
-import githubLogo from '../assets/logos/connect-github.png';
-import gmailLogo from '../assets/logos/connect-gmail.png';
-import linkedinLogo from '../assets/logos/connect-linkedin.png';
+} from '../../data/portfolioData';
+import githubLogo from '../../assets/logos/connect-github.png';
+import gmailLogo from '../../assets/logos/connect-gmail.png';
+import linkedinLogo from '../../assets/logos/connect-linkedin.png';
 
-export default function ConnectSection() {
+export default function ConnectSection({ connectData }) {
+  const cnText = connectData?.text && connectData.text.length > 0 ? connectData.text : CN_TEXT;
+  const cnSub = connectData?.sub || CN_SUB;
+  const cnUrl = { ...CN_URL, ...(connectData?.url || {}) };
+  const schedUrl = connectData?.scheduleUrl || SCHEDULE_URL;
+  const isSchedOk = !/YOUR_USERNAME/.test(schedUrl);
+
   const containerRef = useRef(null);
   const cstRef = useRef(null);
   const aRef = useRef(null);
@@ -151,8 +156,8 @@ export default function ConnectSection() {
 
         {/* Block A: 3D Converging Headline */}
         <div className="cly" id="cA" ref={aRef}>
-          <h2 style={{ margin: 0, display: 'contents' }} aria-label={CN_TEXT.join(' ')}>
-            {CN_TEXT.map((ln) => (
+          <h2 style={{ margin: 0, display: 'contents' }} aria-label={cnText.join(' ')}>
+            {cnText.map((ln) => (
               <div key={ln} className="cl" aria-hidden="true">
                 {[...ln].map((ch, ci) =>
                   ch === ' ' ? (
@@ -168,11 +173,11 @@ export default function ConnectSection() {
 
         {/* Block B: Subtext, Converging App Icons, Receipt Card, Footer */}
         <div className="cly" id="cB" ref={bRef}>
-          <p className="csub">{CN_SUB}</p>
+          <p className="csub">{cnSub}</p>
 
           <div className="cic">
             {/* GitHub */}
-            <a href={CN_URL.github} aria-label="GitHub" target="_blank" rel="noopener">
+            <a href={cnUrl.github} aria-label="GitHub" target="_blank" rel="noopener">
               <img src={githubLogo} alt="GitHub" draggable={false} />
               <span className="cn" aria-hidden="true">
                 GitHub
@@ -180,7 +185,7 @@ export default function ConnectSection() {
             </a>
 
             {/* Gmail */}
-            <a href={CN_URL.email} aria-label="Gmail">
+            <a href={cnUrl.email} aria-label="Gmail">
               <img src={gmailLogo} alt="Gmail" draggable={false} />
               <span className="cn" aria-hidden="true">
                 Gmail
@@ -188,7 +193,7 @@ export default function ConnectSection() {
             </a>
 
             {/* LinkedIn */}
-            <a href={CN_URL.linkedin} aria-label="LinkedIn" target="_blank" rel="noopener">
+            <a href={cnUrl.linkedin} aria-label="LinkedIn" target="_blank" rel="noopener">
               <img src={linkedinLogo} alt="LinkedIn" draggable={false} />
               <span className="cn" aria-hidden="true">
                 LinkedIn
@@ -209,8 +214,8 @@ export default function ConnectSection() {
                   <a
                     className="rc-b"
                     id="sched"
-                    href={SCHED_OK ? SCHEDULE_URL : SCHED_MAIL}
-                    {...(SCHED_OK ? { target: '_blank', rel: 'noopener' } : {})}
+                    href={isSchedOk ? schedUrl : SCHED_MAIL}
+                    {...(isSchedOk ? { target: '_blank', rel: 'noopener' } : {})}
                   >
                     <span className="rc-bt">Schedule a call</span>
                     <span className="rc-ba" aria-hidden="true">
