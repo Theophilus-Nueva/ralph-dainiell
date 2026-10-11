@@ -59,36 +59,31 @@ export default function StackTab({ data, onChange }) {
         </div>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '1.25rem' }}>
+      <div className="admin-stack-list">
         {items.map((cat, catIdx) => {
           const [catTitle, skills] = cat;
           const displayTitle = (catTitle || '').replace('\n', ' ');
           return (
             <div key={catIdx} className="admin-card-box">
-              <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1rem' }}>
+              <div className="admin-category-header">
                 <input
                   type="text"
-                  className="admin-input"
+                  className="admin-input admin-category-input"
                   value={catTitle}
                   onChange={(e) => handleCategoryTitleChange(catIdx, e.target.value)}
-                  style={{ fontWeight: '700', fontSize: '0.95rem', maxWidth: '360px' }}
                 />
                 <span className="admin-item-badge">{skills?.length || 0} skills</span>
               </div>
 
-              <div className="admin-chips-container" style={{ marginBottom: '1.25rem' }}>
+              <div className="admin-chips-container admin-chips-margin">
                 {skills?.map((skill, skillIdx) => {
-                  const [skillName, , , , bg, _textCol, glow] = skill;
+                  const [skillName] = skill;
                   return (
                     <span
                       key={skillIdx}
-                      className="admin-chip"
-                      style={{
-                        background: typeof bg === 'string' && bg.startsWith('#') ? `${bg}22` : 'rgba(255,255,255,0.08)',
-                        borderColor: glow && glow.startsWith('#') ? glow : 'var(--admin-border)',
-                      }}
+                      className="admin-chip admin-chip-skill"
                     >
-                      <span style={{ color: glow && glow.startsWith('#') ? glow : '#fff', fontWeight: '600' }}>
+                      <span className="admin-skill-label">
                         {skillName}
                       </span>
                       <button
@@ -104,7 +99,7 @@ export default function StackTab({ data, onChange }) {
                 })}
               </div>
 
-              <div style={{ display: 'flex', gap: '0.5rem', maxWidth: '340px' }}>
+              <div className="admin-add-skill-row">
                 <input
                   type="text"
                   className="admin-input"

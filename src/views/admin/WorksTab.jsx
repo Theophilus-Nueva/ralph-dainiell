@@ -1,10 +1,9 @@
-import React, { useState } from 'react';
+import React from 'react';
 
 export default function WorksTab({ data, onChange }) {
   const works = data.works || {};
   const apps = works.apps || [];
   const lab = works.lab || {};
-  const [activeSubTab, setActiveSubTab] = useState('apps'); // 'apps' | 'lab'
 
   const handleUpdateApps = (newApps) => {
     onChange({
@@ -95,43 +94,26 @@ export default function WorksTab({ data, onChange }) {
           <h2>Works & Projects</h2>
           <p>Manage iOS Applications (macOS dock apps) and the CyberSec Analyst Lab.</p>
         </div>
-        <div style={{ display: 'flex', gap: '0.5rem' }}>
-          <button
-            type="button"
-            className={`admin-btn ${activeSubTab === 'apps' ? 'admin-btn-primary' : 'admin-btn-outline'}`}
-            onClick={() => setActiveSubTab('apps')}
-          >
-            iOS Apps ({apps.length})
-          </button>
-          <button
-            type="button"
-            className={`admin-btn ${activeSubTab === 'lab' ? 'admin-btn-primary' : 'admin-btn-outline'}`}
-            onClick={() => setActiveSubTab('lab')}
-          >
-            CyberSec Lab
-          </button>
-        </div>
       </div>
 
-      {activeSubTab === 'apps' && (
-        <div>
-          <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.25rem' }}>
-            <span style={{ fontSize: '0.85rem', color: 'var(--admin-text-sub)' }}>
-              These apps are displayed with interactive macOS dock icons and detail flyouts.
-            </span>
-            <button type="button" className="admin-btn admin-btn-success" onClick={handleAddApp}>
-              + Add New App
-            </button>
-          </div>
+      <div style={{ marginBottom: '2.5rem' }}>
+        <div className="admin-subheading-bar">
+          <span className="admin-subheading-text">
+            iOS Applications — Displayed with interactive macOS dock icons and detail flyouts.
+          </span>
+          <button type="button" className="admin-btn admin-btn-success" onClick={handleAddApp}>
+            + Add New App
+          </button>
+        </div>
 
           {apps.map((app, index) => {
             const [icon, name, desc, tags, url] = app;
             return (
               <div key={index} className="admin-item-card">
                 <div className="admin-item-header">
-                  <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                  <div className="admin-item-title-wrap">
                     <span className="admin-item-badge">#{index + 1}</span>
-                    <strong style={{ color: '#fff', fontSize: '0.95rem' }}>{name || `App ${index + 1}`}</strong>
+                    <strong className="admin-item-title">{name || `App ${index + 1}`}</strong>
                   </div>
                   <div className="admin-item-actions">
                     <button
@@ -231,9 +213,7 @@ export default function WorksTab({ data, onChange }) {
             );
           })}
         </div>
-      )}
 
-      {activeSubTab === 'lab' && (
         <div className="admin-card-box">
           <h3 className="admin-card-title">CyberSecurity SOC Lab Information</h3>
           <div className="admin-form-group">
@@ -284,11 +264,10 @@ export default function WorksTab({ data, onChange }) {
           <div className="admin-form-group">
             <label className="admin-label">Verification & Code Links</label>
             {lab.links?.map((link, lIdx) => (
-              <div key={lIdx} style={{ display: 'flex', gap: '0.75rem', marginBottom: '0.5rem' }}>
+              <div key={lIdx} className="admin-link-row">
                 <input
                   type="text"
-                  className="admin-input"
-                  style={{ width: '130px' }}
+                  className="admin-input admin-input-compact"
                   value={link[0] || ''}
                   onChange={(e) => handleLabLinkChange(lIdx, 'name', e.target.value)}
                   placeholder="Label (e.g. Github)"
@@ -304,7 +283,6 @@ export default function WorksTab({ data, onChange }) {
             ))}
           </div>
         </div>
-      )}
-    </div>
-  );
-}
+      </div>
+    );
+  }

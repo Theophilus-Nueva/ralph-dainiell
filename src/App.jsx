@@ -63,6 +63,7 @@ export default function App() {
 
   const handleUpdateData = useCallback((newData) => {
     setPortfolioData(newData);
+    savePortfolioData(newData);
   }, []);
 
   const handleSaveData = useCallback(() => {

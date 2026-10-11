@@ -64,18 +64,18 @@ export default function CertsTab({ data, onChange }) {
         </button>
       </div>
 
-      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.9rem' }}>
+      <div className="admin-list-col">
         {list.map((cert, index) => {
           const [logoKey, title, issuer, verifyUrl] = cert;
           return (
             <div key={index} className="admin-item-card">
               <div className="admin-item-header">
-                <div style={{ display: 'flex', alignItems: 'center', gap: '0.65rem' }}>
+                <div className="admin-item-title-wrap">
                   <span className="admin-item-badge">#{index + 1}</span>
-                  <strong style={{ color: '#fff', fontSize: '0.95rem' }}>
+                  <strong className="admin-item-title">
                     {title || `Certificate ${index + 1}`}
                   </strong>
-                  <span style={{ fontSize: '0.78rem', color: 'var(--admin-text-dim)' }}>({issuer})</span>
+                  <span className="admin-item-subtitle">({issuer})</span>
                 </div>
                 <div className="admin-item-actions">
                   <button

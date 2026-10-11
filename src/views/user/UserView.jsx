@@ -11,6 +11,7 @@ import WorksSection from './WorksSection';
 import CertificateSection from './CertificateSection';
 import StackSection from './StackSection';
 import ConnectSection from './ConnectSection';
+import '../../styles/admin.css';
 
 export default function UserView({
   portfolioData,
@@ -76,7 +77,7 @@ export default function UserView({
             <span className="admin-preview-pill">ADMIN PREVIEW</span>
             <span>Live Portfolio with Active Edits</span>
           </div>
-          <div style={{ display: 'flex', gap: '0.65rem' }}>
+          <div className="admin-preview-actions">
             <button
               type="button"
               className="admin-btn admin-btn-primary"
@@ -105,6 +106,7 @@ export default function UserView({
       />
 
       <HomeSection
+        key={portfolioData?.home?.heroWords?.join('-') || 'home'}
         heroWords={portfolioData?.home?.heroWords}
         photo={portfolioData?.home?.photo}
         name={portfolioData?.home?.name}
