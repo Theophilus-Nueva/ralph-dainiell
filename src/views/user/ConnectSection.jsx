@@ -10,6 +10,8 @@ import {
 import githubLogo from '../../assets/logos/connect-github.png';
 import gmailLogo from '../../assets/logos/connect-gmail.png';
 import linkedinLogo from '../../assets/logos/connect-linkedin.png';
+import instagramLogo from '../../assets/logos/connect-instagram.png';
+import resumeIcon from '../../assets/logos/resume-icon.png';
 
 export default function ConnectSection({ connectData }) {
   const cnText = connectData?.text && connectData.text.length > 0 ? connectData.text : CN_TEXT;
@@ -179,6 +181,18 @@ export default function ConnectSection({ connectData }) {
           <p className="csub">{cnSub}</p>
 
           <div className="cic">
+
+
+            {/* Instagram */}
+            <a href={cnUrl.instagram} aria-label="Instagram" target="_blank" rel="noopener">
+              <span className="cic-icon">
+                <img src={instagramLogo} alt="Instagram" draggable={false} />
+              </span>
+              <span className="cn" aria-hidden="true">
+                Instagram
+              </span>
+            </a>
+            
             {/* GitHub */}
             <a href={cnUrl.github} aria-label="GitHub" target="_blank" rel="noopener">
               <span className="cic-icon">
@@ -186,6 +200,22 @@ export default function ConnectSection({ connectData }) {
               </span>
               <span className="cn" aria-hidden="true">
                 GitHub
+              </span>
+            </a>
+
+            {/* Resume */}
+            <a
+              href={cnUrl.resume}
+              aria-label="Resume"
+              target="_blank"
+              rel="noopener noreferrer"
+              download={cnUrl.resume && cnUrl.resume !== 'https://YOUR_RESUME_LINK' ? true : undefined}
+            >
+              <span className="cic-icon cic-resume">
+                <img src={resumeIcon} alt="Resume" draggable={false} />
+              </span>
+              <span className="cn" aria-hidden="true">
+                Resume
               </span>
             </a>
 

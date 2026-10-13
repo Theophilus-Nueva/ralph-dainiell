@@ -100,10 +100,7 @@ export default function UserView({
       {!isAdmin && <WelcomeScreen onComplete={handleWelcomeComplete} />}
       <CustomCursor />
       <RailNav onNavigate={navigateTo} pulseRef={pulseRef} />
-      <ConnectButton
-        onConnectClick={connectFlow}
-        resumeUrl={portfolioData?.connect?.url?.resume}
-      />
+      <ConnectButton onConnectClick={connectFlow} />
 
       <HomeSection
         key={portfolioData?.home?.heroWords?.join('-') || 'home'}

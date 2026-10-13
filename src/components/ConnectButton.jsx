@@ -1,11 +1,7 @@
 import React, { useEffect, useRef } from 'react';
-import { CN_URL } from '../data/portfolioData';
-import resumeIcon from '../assets/logos/resume-icon.png';
-import downloadIcon from '../assets/logos/download-icon.png';
 
-export default function ConnectButton({ onConnectClick, resumeUrl }) {
+export default function ConnectButton({ onConnectClick }) {
   const btnRef = useRef(null);
-  const currentResume = resumeUrl || CN_URL.resume;
 
   useEffect(() => {
     const home = document.getElementById('home');
@@ -35,24 +31,6 @@ export default function ConnectButton({ onConnectClick, resumeUrl }) {
 
   return (
     <div id="hactions" className="hactions">
-      <a
-        id="hres"
-        href={currentResume}
-        target="_blank"
-        rel="noopener noreferrer"
-        aria-label="Download resume"
-        download={currentResume && currentResume !== 'https://YOUR_RESUME_LINK' ? true : undefined}
-      >
-        <span className="rbx-i" aria-hidden="true">
-          <img src={resumeIcon} className="i-res" alt="" draggable={false} />
-          <img src={downloadIcon} className="i-down" alt="" draggable={false} />
-        </span>
-        <span className="cbx-t">
-          <span className="t-res">Resume</span>
-          <span className="t-down">download resume</span>
-        </span>
-      </a>
-
       <a
         id="hcon"
         ref={btnRef}

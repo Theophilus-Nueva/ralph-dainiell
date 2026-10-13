@@ -279,6 +279,8 @@ html.on-home #hcon:active,html.on-home #hres:active{transform:translateY(0) scal
 .cic-icon{display:block;width:100%;height:100%;position:relative;border-radius:min(16px,20%);overflow:hidden;box-shadow:0 8px 22px rgba(0,0,0,.22),0 2px 6px rgba(0,0,0,.14);transition:transform .35s var(--ease),box-shadow .35s var(--ease)}
 .cic-icon::after{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;box-shadow:inset 0 -3px 8px rgba(255,255,255,.2),inset 0 1.5px 4px rgba(255,255,255,.15),inset 0 0 0 1px rgba(255,255,255,.08);transition:box-shadow .35s var(--ease)}
 .cic svg,.cic img{display:block;width:100%;height:100%;object-fit:cover;border-radius:inherit}
+.cic-icon.cic-resume{background:#18181b;display:flex;align-items:center;justify-content:center}
+.cic-icon.cic-resume img{width:68%;height:68%;object-fit:contain;filter:brightness(0) invert(1)}
 .cic a:hover .cic-icon,.cic a:focus-visible .cic-icon{transform:translateY(-6px) scale(1.08);box-shadow:0 16px 32px rgba(0,0,0,.28),0 4px 10px rgba(0,0,0,.18)}
 .cic a:hover .cic-icon::after,.cic a:focus-visible .cic-icon::after{box-shadow:inset 0 -4px 10px rgba(255,255,255,.28),inset 0 1.5px 5px rgba(255,255,255,.22),inset 0 0 0 1px rgba(255,255,255,.12)}
 .cic a:focus-visible{outline:2px solid #2E7D32;outline-offset:6px;border-radius:min(16px,20%)}
