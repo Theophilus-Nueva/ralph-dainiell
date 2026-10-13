@@ -244,7 +244,8 @@ html.on-home #hcon:active,html.on-home #hres:active{transform:translateY(0) scal
 #cur.hov,#cur.hov.dk{mix-blend-mode:difference}
 #cur.hov::before,#cur.hov.dk::before{width:12px;height:12px;margin:-6px 0 0 -6px;border-radius:4px;background:#fff;opacity:1;animation:curPulse 1.3s ease-out infinite}
 @keyframes curPulse{0%{box-shadow:0 0 0 0 rgba(255,255,255,.75)}100%{box-shadow:0 0 0 13px rgba(255,255,255,0)}}
-#cur.px::before,#cur.px.dk::before{opacity:1;width:6px;height:6px;margin:-3px 0 0 -3px;border-radius:50%}
+#cur.dot::before,#cur.dot.dk::before,#cur.px::before,#cur.px.dk::before{opacity:1;width:7px;height:7px;margin:-3.5px 0 0 -3.5px;border-radius:50%;background:#fff;animation:none;box-shadow:none}
+#cur.dot.dn::before,#cur.px.dn::before{transform:scale(.65)}
 #cur.hov.dn::before{transform:scale(.6)}
 #cur.dn::before{transform:scale(.82)}
 /* git graph: small dark card, white dots (sits in the stack header so the page never grows taller than the screen) */

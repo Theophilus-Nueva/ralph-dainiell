@@ -31,9 +31,13 @@ export default function CustomCursor() {
       const sec = target.closest('section');
       cur.classList.toggle('dk', !!(sec && DARK_SECTIONS[sec.id]));
 
+      const isPh = !!target.closest('.ph');
+      cur.classList.toggle('dot', isPh);
+      cur.classList.toggle('px', isPh);
+
       const h = target.closest('.cd, a, button, #rail');
       const hs = target.closest('.cd, .b, a, button, #rail');
-      cur.classList.toggle('hov', !!h);
+      cur.classList.toggle('hov', !!h && !isPh);
       cur.classList.toggle('gone', !!target.closest('#ghc, .ghl'));
 
       if (hs !== lastH) {
@@ -45,7 +49,7 @@ export default function CustomCursor() {
     const handlePointerDown = () => cur.classList.add('dn');
     const handlePointerUp = () => cur.classList.remove('dn');
     const handlePointerLeave = () => {
-      cur.classList.remove('on');
+      cur.classList.remove('on', 'dot', 'px');
       lastH = null;
     };
 
